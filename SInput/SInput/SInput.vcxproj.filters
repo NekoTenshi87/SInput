@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\GamePad">
+      <UniqueIdentifier>{4f830992-1e24-48f9-aa7a-3e879d416f71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Keyboard">
+      <UniqueIdentifier>{e7b060b9-2744-40af-9d36-afbe18405701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mouse">
+      <UniqueIdentifier>{c3e6bbf4-5bd7-4e06-9e56-47240faaa9c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="External Header Files\GamePad">
+      <UniqueIdentifier>{ff467bbf-9d50-45f9-9113-68f37574ddd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Header Files\Keyboard">
+      <UniqueIdentifier>{87839e93-8c63-4bbe-992e-53d2b32af8fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Header Files\Mouse">
+      <UniqueIdentifier>{e1cf5ea8-e548-4041-9add-9dcb63fb2770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal Header Files">
+      <UniqueIdentifier>{cacf83a4-42e4-4407-83fa-67610f23068c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal Header Files\GamePad">
+      <UniqueIdentifier>{66e0ec21-52b2-4f72-aa06-6a979dfb7ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal Header Files\Keyboard">
+      <UniqueIdentifier>{edd28e72-a9d9-4fda-9e65-23891cdf12bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal Header Files\Mouse">
+      <UniqueIdentifier>{f377b2ba-3cba-47e6-93ce-3c38754d09d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Keyboard\Keyboard.cpp">
+      <Filter>Source Files\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mouse\Mouse.cpp">
+      <Filter>Source Files\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GamePad\GamePad.cpp">
+      <Filter>Source Files\GamePad</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Enum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GamePad\GamePadManager.cpp">
+      <Filter>Source Files\GamePad</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Keyboard\KeyboardManager.cpp">
+      <Filter>Source Files\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mouse\MouseManager.cpp">
+      <Filter>Source Files\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DeviceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\SInput\GamePad\GamePad.hpp">
+      <Filter>External Header Files\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Keyboard\Keyboard.hpp">
+      <Filter>External Header Files\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Mouse\Mouse.hpp">
+      <Filter>External Header Files\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Enum.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Device.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Event.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Input.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\SInput.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Internal.hpp">
+      <Filter>Internal Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GamePad\GamePadManager.hpp">
+      <Filter>Internal Header Files\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Keyboard\KeyboardManager.hpp">
+      <Filter>Internal Header Files\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mouse\MouseManager.hpp">
+      <Filter>Internal Header Files\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DeviceManager.hpp">
+      <Filter>Internal Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\DeviceList.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
