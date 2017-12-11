@@ -227,11 +227,7 @@ void joystick_refresh()
           SInput::GAMEPAD::BUTTON S_Button = GLFW_GamePadButtonConverter(j);
           SInput::GAMEPAD::ACTION S_Action = GLFW_GamePadActionConverter(glfw_buttons[j]);
 
-<<<<<<< HEAD
           if (SInput::GamePad(i)->ButtonPressed(S_Button) ^ (S_Action == SInput::GAMEPAD::PRESSED))
-=======
-          if (static_cast<SInput::GAMEPAD::ACTION>(SInput::GamePad(i)->ButtonPressed(S_Button)) != S_Action)
->>>>>>> ef13c2cb094eba5db7ce14ba82123cac5972d07d
           {
             gamepad_button_callback(glfw_window, i, j, glfw_buttons[j]);
           }
@@ -352,7 +348,7 @@ int main(int argc, char* args[])
     SInput::SwapBuffers();
 
     PullEvents();
-
+    /*
     if (SInput::Keyboard()->ModsPressed(SInput::KEYBOARD::MOD_CTRL | SInput::KEYBOARD::MOD_SHIFT))
     {
       if (SInput::Keyboard()->KeyTriggered(SInput::KEYBOARD::KEY_Q))
@@ -369,7 +365,7 @@ int main(int argc, char* args[])
       {
         glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
       }
-    }
+    }*/
 
     // Close App on ESC
     if (glfwGetKey(glfw_window, GLFW_KEY_ESCAPE) == GLFW_TRUE)

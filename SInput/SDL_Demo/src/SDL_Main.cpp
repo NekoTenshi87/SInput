@@ -326,6 +326,12 @@ void PullEvents()
     {
       imgui_window_active ^= 1;
     }
+
+    // Close App on ESC
+    if (event.key.keysym.sym == SDLK_ESCAPE && event.key.keysym.mod == KMOD_NONE && event.type == SDL_KEYDOWN)
+    {
+      done = true;
+    }
   }
 }
 
@@ -374,15 +380,6 @@ int main(int argc, char* args[])
     SInput::SwapBuffers();
 
     PullEvents();
-
-    // Close App on ESC
-    if (SInput::Keyboard()->ModsPressed(SInput::KEYBOARD::MOD_NONE))
-    {
-      if (SInput::Keyboard()->KeyTriggered(SInput::KEYBOARD::KEY_ESC))
-      {
-        done = true;
-      }
-    }
 
     /* Render here */
     SDL_ImGui_GL3_NewFrame(sdl_window);
