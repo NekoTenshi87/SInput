@@ -20,6 +20,8 @@ static bool show_mouse_pos = true;
 static bool show_gamepad_buttons = true;
 static bool show_gamepad_connect = true;
 static bool show_gamepad_axis = true;
+static bool run_monkey = false;
+static bool show_pp_detection = false;
 
 static GLFWwindow* glfw_window;
 
@@ -386,6 +388,8 @@ int main(int argc, char* args[])
       if (ImGui::Button("Debug Window")) show_log_window ^= 1;
       if (ImGui::CollapsingHeader("Basic Debug"))
       {
+        ImGui::Checkbox("Monkey", &run_monkey);
+
         if (ImGui::TreeNode("Keyboard"))
         {
           ImGui::Checkbox("Keyboard Keys", &show_keys);
@@ -405,10 +409,45 @@ int main(int argc, char* args[])
           ImGui::Checkbox("GamePad Connection", &show_gamepad_connect);
           ImGui::Checkbox("GamePad Buttons", &show_gamepad_buttons);
           ImGui::Checkbox("GamePad Axis", &show_gamepad_axis);
+          ImGui::Checkbox("Plug and Play Detection", &show_pp_detection);
           ImGui::TreePop();
         }
 
       }
+      if (ImGui::CollapsingHeader("Virtual Controller"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Key/Button Mapping"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Combination Detection"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Stat Tracking"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("N-Grams"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Pattern Recognition"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Full Scene Replay"))
+      {
+
+      }
+      if (ImGui::CollapsingHeader("Single Source Rewind"))
+      {
+
+      }
+      
+
 
 
       ImGui::End();
