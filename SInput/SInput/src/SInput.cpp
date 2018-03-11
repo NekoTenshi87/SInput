@@ -7,29 +7,19 @@
 namespace SInput
 {
   bool Instance_Init = false;
+  Input Input_Instance;
 
   void Init()
   {
     if (!Instance_Init)
     {
       Instance_Init = true;
-
-      //Input_Instance.Init();
-
-      // Init ImGui
-
     }
-
-
   }
 
   void Shutdown()
   {
     Instance_Init = false;
-
-    // Close ImGui
-
-
   }
 
   void SwapBuffers()
@@ -39,6 +29,5 @@ namespace SInput
       Input_Instance.SwapBuffers();
     }
   }
-
 }
 
