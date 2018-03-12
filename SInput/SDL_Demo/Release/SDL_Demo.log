@@ -1,0 +1,8 @@
+﻿  SDL_Converters.cpp
+  SDL_ImGui_gl3.cpp
+  SDL_Main.cpp
+  Generating code
+  All 2714 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  SDL_Demo.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\Release\SDL_Demo.exe
+  SDL_Demo.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\Release\SDL_Demo.pdb (Full PDB)

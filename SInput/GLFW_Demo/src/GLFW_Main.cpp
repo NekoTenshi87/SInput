@@ -1,33 +1,23 @@
-//#include <stdio.h>
-//#include <iostream>
+
 #include <IMGUI/imgui.h>
 #include <GLFW_Demo/GLFW_ImGui_gl3.hpp>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <SInput/SInput.hpp>
 
+#include <Demo_Lib\ImGui_SInput_Display.hpp>
 #include <GLFW_Demo/GLFW_Converters.hpp>
 
 // Gets rid of Console Window
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
-static bool imgui_window_active = false;
-
-static bool show_keys = true;
-static bool show_mouse_buttons = true;
-static bool show_mouse_scroll = true;
-static bool show_mouse_pos = true;
-static bool show_gamepad_buttons = true;
-static bool show_gamepad_connect = true;
-static bool show_gamepad_axis = true;
-static bool run_monkey = false;
-static bool show_pp_detection = false;
+static ImGui_SInput_Display g_display;
 
 static GLFWwindow* glfw_window;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  if (!imgui_window_active)
+  if (!g_display.is_active)
   {
     SInput::KEYBOARD::ACTION S_Action = GLFW_KeyActionConverter(action);
 
@@ -38,7 +28,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
       SInput::Keyboard()->UpdateKey(S_Key, S_Action);
       SInput::Keyboard()->UpdateMods(GLFW_ModConverter(mods));
 
-      if (show_keys)
+      if (g_display.show_keys)
       {
         SInput::Keyboard()->Print(S_Key);
       }
@@ -51,13 +41,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
   if (key == GLFW_KEY_I && mods == GLFW_MOD_CONTROL && action == GLFW_PRESS)
   {
-    imgui_window_active ^= 1;
+    g_display.is_active ^= 1;
+  }
+
+  // Close App on ESC
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+  {
+    glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
   }
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-  if (!imgui_window_active)
+  if (!g_display.is_active)
   {
     SInput::MOUSE::ACTION S_Action = GLFW_MouseActionConverter(action);
 
@@ -68,7 +64,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
       SInput::Mouse()->UpdateButton(S_Button, S_Action);
       SInput::Keyboard()->UpdateMods(GLFW_ModConverter(mods));
 
-      if (show_mouse_buttons)
+      if (g_display.show_mouse_buttons)
       {
         SInput::Mouse()->Print(S_Button);
       }
@@ -82,30 +78,33 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void mouse_enter_callback(GLFWwindow* window, int enter)
 {
-  switch (enter)
+  if (!g_display.is_active)
   {
-    case GLFW_FALSE:
-      SInput::Mouse()->UpdateMouseEnter(false);
-      break;
+    switch (enter)
+    {
+      case GLFW_FALSE:
+        SInput::Mouse()->UpdateMouseEnter(false);
+        break;
 
-    case GLFW_TRUE:
-      SInput::Mouse()->UpdateMouseEnter(true);
-      break;
+      case GLFW_TRUE:
+        SInput::Mouse()->UpdateMouseEnter(true);
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
 }
 
 void mouse_pos_callback(GLFWwindow* window, double posX, double posY)
 {
-  if (!imgui_window_active)
+  if (!g_display.is_active)
   {
     SInput::MousePos pos(static_cast<int>(std::floor(posX)), static_cast<int>(std::floor(posY)));
 
     SInput::Mouse()->UpdateMousePos(pos);
 
-    if (show_mouse_pos)
+    if (g_display.show_mouse_pos)
     {
       SInput::Mouse()->PrintPos();
     }
@@ -114,11 +113,11 @@ void mouse_pos_callback(GLFWwindow* window, double posX, double posY)
 
 void mouse_scroll_callback(GLFWwindow* window, double dX, double dY)
 {
-  if (!imgui_window_active)
+  if (!g_display.is_active)
   {
     SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)));
 
-    if (show_mouse_scroll)
+    if (g_display.show_mouse_scroll)
     {
       SInput::Mouse()->PrintScoll();
     }
@@ -161,7 +160,7 @@ void gamepad_connection_callback(GLFWwindow* window, int gp_num, int connect)
     break;
   }
 
-  if (show_gamepad_connect)
+  if (g_display.show_gamepad_connect)
   {
     SInput::GamePad(gp_num)->PrintConnection(gp_num +1);
   }
@@ -178,7 +177,7 @@ void gamepad_button_callback(GLFWwindow* window, int gp_num, int button, unsigne
 
     SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
 
-    if (show_gamepad_buttons)
+    if (g_display.show_gamepad_buttons)
     {
       SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
     }
@@ -191,7 +190,7 @@ void gamepad_axis_callback(GLFWwindow* window, int gp_num, int axis, float delta
 
   SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
 
-  if (show_gamepad_axis)
+  if (g_display.show_gamepad_axis)
   {
     SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
   }
@@ -338,9 +337,9 @@ int main(int argc, char* args[])
 
   
 
-  bool show_log_window = true;
+  //bool show_log_window = true;
   //bool show_another_window = false;
-  ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 
 
 
@@ -369,104 +368,19 @@ int main(int argc, char* args[])
       }
     }*/
 
-    // Close App on ESC
-    if (glfwGetKey(glfw_window, GLFW_KEY_ESCAPE) == GLFW_TRUE)
-    {
-      glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
-    }
-
     /* Render here */
     GLFW_ImGui_GL3_NewFrame();
 
-    // 1. Show a simple window
-    // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
-    if (imgui_window_active)
-    {
-      ImGui::Begin("SInput", &imgui_window_active);
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-      ImGui::ColorEdit3("clear color", (float*)&clear_color);
-      if (ImGui::Button("Debug Window")) show_log_window ^= 1;
-      if (ImGui::CollapsingHeader("Basic Debug"))
-      {
-        ImGui::Checkbox("Monkey", &run_monkey);
+    g_display.DisplaySInputWindow();
 
-        if (ImGui::TreeNode("Keyboard"))
-        {
-          ImGui::Checkbox("Keyboard Keys", &show_keys);
-          ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Mouse"))
-        {
-          ImGui::Checkbox("Mouse Buttons", &show_mouse_buttons);
-          ImGui::Checkbox("Mouse Scroll", &show_mouse_scroll);
-          ImGui::Checkbox("Mouse Pos", &show_mouse_pos);
-          ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("GamePad"))
-        {
-          ImGui::Checkbox("GamePad Connection", &show_gamepad_connect);
-          ImGui::Checkbox("GamePad Buttons", &show_gamepad_buttons);
-          ImGui::Checkbox("GamePad Axis", &show_gamepad_axis);
-          ImGui::Checkbox("Plug and Play Detection", &show_pp_detection);
-          ImGui::TreePop();
-        }
-
-      }
-      if (ImGui::CollapsingHeader("Virtual Controller"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Key/Button Mapping"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Combination Detection"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Stat Tracking"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("N-Grams"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Pattern Recognition"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Full Scene Replay"))
-      {
-
-      }
-      if (ImGui::CollapsingHeader("Single Source Rewind"))
-      {
-
-      }
-      
-
-
-
-      ImGui::End();
-    }
-
-    // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-    if (show_log_window)
-    {
-      ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-      //ImGui::ShowTestWindow(&show_test_window);
-      GLFW_ImGui_GL3_ShowLog(&imgui_window_active);
-      //ImGui::ShowExampleApp
-    }
+    g_display.DisplayDebbugWindow();
 
     // Rendering
     int display_w, display_h;
     glfwGetFramebufferSize(glfw_window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
-    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+    glClearColor(g_display.color.x, g_display.color.y, g_display.color.z, g_display.color.w);
+    //glClearColor(color.x, color.y, color.z, color.w);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui::Render();
 

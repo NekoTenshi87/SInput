@@ -1,0 +1,8 @@
+﻿  GLFW_Main.cpp
+  Generating code
+  204 of 2711 functions ( 7.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    74 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  GLFW_Demo.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\x64\Release\GLFW_Demo.exe
+  GLFW_Demo.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\x64\Release\GLFW_Demo.pdb (Full PDB)

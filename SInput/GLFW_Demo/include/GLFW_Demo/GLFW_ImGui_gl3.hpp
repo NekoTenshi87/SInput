@@ -26,5 +26,3 @@ IMGUI_API void        GLFW_ImGui_GL3_ScrollCallback(GLFWwindow* window, double x
 IMGUI_API void        GLFW_ImGui_GL3_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 IMGUI_API void        GLFW_ImGui_GL3_CharCallback(GLFWwindow* window, unsigned int c);
 
-IMGUI_API void        GLFW_ImGui_GL3_ShowLog(bool* p_open);
-

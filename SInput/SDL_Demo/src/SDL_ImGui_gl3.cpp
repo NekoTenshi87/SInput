@@ -263,13 +263,13 @@ bool SDL_ImGui_GL3_ProcessEvent(SDL_Event* event)
 }
 
 
-void SDL_ImGui_GL3_MouseButtonCallback(SDL_Window*, int button, int action, int /*mods*/)
+void SDL_ImGui_GL3_MouseButtonCallback(SDL_Window*, int button, int action, int mods)
 {
     if (action == SDL_PRESSED && button >= 0 && button < 3)
         g_MousePressed[button] = true;
 }
 
-void SDL_ImGui_GL3_ScrollCallback(SDL_Window*, double /*xoffset*/, double yoffset)
+void SDL_ImGui_GL3_ScrollCallback(SDL_Window*, double xoffset, double yoffset)
 {
     g_MouseWheel += (float)yoffset; // Use fractional mouse wheel, 1.0 unit 5 lines.
 }

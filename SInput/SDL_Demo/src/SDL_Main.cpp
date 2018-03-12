@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <iostream>
+
 #include <IMGUI/imgui.h>
 #include <SDL_Demo/SDL_ImGui_gl3.hpp>
 #include <GL/gl3w.h>
@@ -7,20 +6,13 @@
 #include <SDL/SDL.h>
 #include <SInput/SInput.hpp>
 
+#include <Demo_Lib\ImGui_SInput_Display.hpp>
 #include <SDL_Demo/SDL_Converters.hpp>
 
 // Gets rid of Console Window
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
-static bool imgui_window_active = false;
-
-static bool show_keys = true;
-static bool show_mouse_buttons = true;
-static bool show_mouse_scroll = true;
-static bool show_mouse_pos = true;
-static bool show_gamepad_buttons = true;
-static bool show_gamepad_connect = true;
-static bool show_gamepad_axis = true;
+static ImGui_SInput_Display g_display;
 
 static SDL_Window* sdl_window = NULL;
 static bool done = false;
@@ -36,7 +28,7 @@ void key_callback(SDL_Window* window, int key, int scancode, int action, int mod
     SInput::Keyboard()->UpdateKey(S_Key, S_Action);
     SInput::Keyboard()->UpdateMods(SDL_ModConverter(mods));
 
-    if (show_keys)
+    if (g_display.show_keys)
     {
       SInput::Keyboard()->Print(S_Key);
     }
@@ -54,7 +46,7 @@ void mouse_button_callback(SDL_Window* window, int button, int action, int mods)
     SInput::Mouse()->UpdateButton(S_Button, S_Action);
     SInput::Keyboard()->UpdateMods(SDL_ModConverter(mods));
 
-    if (show_mouse_buttons)
+    if (g_display.show_mouse_buttons)
     {
       SInput::Mouse()->Print(S_Button);
     }
@@ -84,7 +76,7 @@ void mouse_pos_callback(SDL_Window* window, int posX, int posY)
 
   SInput::Mouse()->UpdateMousePos(pos);
 
-  if (show_mouse_pos)
+  if (g_display.show_mouse_pos)
   {
     SInput::Mouse()->PrintPos();
   }
@@ -94,7 +86,7 @@ void mouse_scroll_callback(SDL_Window* window, double dX, double dY)
 {
   SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)));
 
-  if (show_mouse_scroll)
+  if (g_display.show_mouse_scroll)
   {
     SInput::Mouse()->PrintScoll();
   }
@@ -132,7 +124,7 @@ void gamepad_connection_callback(SDL_Window* window, int gp_num, int connect)
     break;
   }
 
-  if (show_gamepad_connect)
+  if (g_display.show_gamepad_connect)
   {
     SInput::GamePad(gp_num)->PrintConnection(gp_num +1);
   }
@@ -149,7 +141,7 @@ void gamepad_button_callback(SDL_Window* window, int gp_num, int button, unsigne
 
     SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
 
-    if (show_gamepad_buttons)
+    if (g_display.show_gamepad_buttons)
     {
       SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
     }
@@ -162,7 +154,7 @@ void gamepad_axis_callback(SDL_Window* window, int gp_num, int axis, float delta
 
   SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
 
-  if (show_gamepad_axis)
+  if (g_display.show_gamepad_axis)
   {
     SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
   }
@@ -250,7 +242,7 @@ void PullEvents()
 
   while (SDL_PollEvent(&event))
   {
-    if (!imgui_window_active)
+    if (!g_display.is_active)
     {
       switch (event.type)
       {
@@ -324,7 +316,7 @@ void PullEvents()
 
     if (event.key.keysym.sym == SDLK_i && event.key.keysym.mod | KMOD_CTRL && event.type == SDL_KEYDOWN)
     {
-      imgui_window_active ^= 1;
+      g_display.is_active ^= 1;
     }
 
     // Close App on ESC
@@ -384,52 +376,9 @@ int main(int argc, char* args[])
     /* Render here */
     SDL_ImGui_GL3_NewFrame(sdl_window);
 
-    // 1. Show a simple window
-    // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets appears in a window automatically called "Debug"
-    if (imgui_window_active)
-    {
-      ImGui::Begin("SInput", &imgui_window_active);
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-      ImGui::ColorEdit3("clear color", (float*)&clear_color);
-      if (ImGui::Button("Debug Window")) show_log_window ^= 1;
-      if (ImGui::CollapsingHeader("Basic Debug"))
-      {
-        if (ImGui::TreeNode("Keyboard"))
-        {
-          ImGui::Checkbox("Keyboard Keys", &show_keys);
-          ImGui::TreePop();
-        }
+    g_display.DisplaySInputWindow();
 
-        if (ImGui::TreeNode("Mouse"))
-        {
-          ImGui::Checkbox("Mouse Buttons", &show_mouse_buttons);
-          ImGui::Checkbox("Mouse Scroll", &show_mouse_scroll);
-          ImGui::Checkbox("Mouse Pos", &show_mouse_pos);
-          ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("GamePad"))
-        {
-          ImGui::Checkbox("GamePad Connection", &show_gamepad_connect);
-          ImGui::Checkbox("GamePad Buttons", &show_gamepad_buttons);
-          ImGui::Checkbox("GamePad Axis", &show_gamepad_axis);
-          ImGui::TreePop();
-        }
-
-      }
-
-
-      ImGui::End();
-    }
-
-    // 3. Show the ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
-    if (show_log_window)
-    {
-      ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-      //ImGui::ShowTestWindow(&show_test_window);
-      SDL_ImGui_GL3_ShowLog(&imgui_window_active);
-      //ImGui::ShowExampleApp
-    }
+    g_display.DisplayDebbugWindow();
 
     // Rendering
     glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
