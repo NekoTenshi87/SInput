@@ -75,6 +75,9 @@
     <ClCompile Include="src\DeviceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Binding.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\SInput\GamePad\GamePad.hpp">
@@ -117,6 +120,9 @@
       <Filter>Internal Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SInput\DeviceList.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Binding.hpp">
       <Filter>External Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <SInput\Binding.hpp>
 #include <SInput\Enum.hpp>
 
 namespace SInput
@@ -113,6 +114,22 @@ namespace SInput
     void UpdateMouseWheel(int dX, int dY);
 
     //////////////////////////////////////////////////////////////////////////////
+    //  Bindings
+    //////////////////////////////////////////////////////////////////////////////
+
+    void Bind(int name_id, MOUSE::BUTTON button);
+
+    void UnBind(int name_id);
+
+    MOUSE::BUTTON getBindButton(const int name_id) const;
+
+    int getBindID(const MOUSE::BUTTON button) const;
+
+    bool getNextButton = false;
+
+    MOUSE::BUTTON nextButton = MOUSE::BUTTON::UNKNOWN_BUTTON;
+
+    //////////////////////////////////////////////////////////////////////////////
     // Enums
     //////////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +165,8 @@ namespace SInput
 
     MOUSE_DATA currMouse;  // Stores the current Mouse Buttons pressed
     MOUSE_DATA prevMouse;  // Stores the previous Mouse Buttons pressed
+
+    Binding button_binding{ "Mouse Bindings" };
   };
 
   ////////////////////////////////////////////////////////////////////////////////

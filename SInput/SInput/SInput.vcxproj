@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Binding.cpp" />
     <ClCompile Include="src\DeviceManager.cpp" />
     <ClCompile Include="src\Enum.cpp" />
     <ClCompile Include="src\GamePad\GamePad.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="src\SInput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\SInput\Binding.hpp" />
     <ClInclude Include="include\SInput\DeviceList.hpp" />
     <ClInclude Include="include\SInput\Enum.hpp" />
     <ClInclude Include="include\SInput\Event.hpp" />

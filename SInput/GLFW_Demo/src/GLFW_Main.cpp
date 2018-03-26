@@ -36,7 +36,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   }
   else
   {
-    GLFW_ImGui_GL3_KeyCallback(window, key, scancode, action, mods);
+    if (SInput::Keyboard()->getNextKey && SInput::Keyboard()->nextKey == SInput::KEYBOARD::KEY::UNKNOWN_KEY)
+    {
+      SInput::KEYBOARD::ACTION S_Action = GLFW_KeyActionConverter(action);
+
+      if (S_Action != SInput::KEYBOARD::KEY::UNKNOWN_KEY)
+      {
+        SInput::Keyboard()->nextKey = GLFW_KeyConverter(key);
+      }
+    }
+    else
+    {
+      GLFW_ImGui_GL3_KeyCallback(window, key, scancode, action, mods);
+    }
   }
 
   if (key == GLFW_KEY_I && mods == GLFW_MOD_CONTROL && action == GLFW_PRESS)
@@ -72,7 +84,19 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
   }
   else
   {
-    GLFW_ImGui_GL3_MouseButtonCallback(window, button, action, mods);
+    if (SInput::Mouse()->getNextButton && SInput::Mouse()->nextButton == SInput::MOUSE::BUTTON::UNKNOWN_BUTTON)
+    {
+      SInput::MOUSE::ACTION S_Action = GLFW_MouseActionConverter(action);
+
+      if (S_Action != SInput::MOUSE::UNKNOWN_ACTION)
+      {
+        SInput::Mouse()->nextButton = GLFW_MouseConverter(button);
+      }
+    }
+    else
+    {
+      GLFW_ImGui_GL3_MouseButtonCallback(window, button, action, mods);
+    }
   }
 }
 
@@ -169,30 +193,48 @@ void gamepad_connection_callback(GLFWwindow* window, int gp_num, int connect)
 
 void gamepad_button_callback(GLFWwindow* window, int gp_num, int button, unsigned char action)
 {
-  SInput::GAMEPAD::ACTION S_Action = GLFW_GamePadActionConverter(action);
-
-  if (S_Action != SInput::GAMEPAD::UNKNOWN_ACTION)
+  if (!g_display.is_active)
   {
-    SInput::GAMEPAD::BUTTON S_Button = GLFW_GamePadButtonConverter(button);
+    SInput::GAMEPAD::ACTION S_Action = GLFW_GamePadActionConverter(action);
 
-    SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
-
-    if (g_display.show_gamepad_buttons)
+    if (S_Action != SInput::GAMEPAD::UNKNOWN_ACTION)
     {
-      SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
+      SInput::GAMEPAD::BUTTON S_Button = GLFW_GamePadButtonConverter(button);
+
+      SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
+
+      if (g_display.show_gamepad_buttons)
+      {
+        SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
+      }
+    }
+  }
+  else
+  {
+    if (SInput::GamePad(gp_num)->getNextButton && SInput::GamePad(gp_num)->nextButton == SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
+    {
+      SInput::GAMEPAD::ACTION S_Action = GLFW_GamePadActionConverter(action);
+
+      if (S_Action != SInput::GAMEPAD::UNKNOWN_ACTION)
+      {
+        SInput::GamePad(gp_num)->nextButton = GLFW_GamePadButtonConverter(button);
+      }
     }
   }
 }
 
 void gamepad_axis_callback(GLFWwindow* window, int gp_num, int axis, float delta)
 {
-  SInput::GAMEPAD::AXIS S_Axis = GLFW_GamePadAxisConverter(axis);
-
-  SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
-
-  if (g_display.show_gamepad_axis)
+  if (!g_display.is_active)
   {
-    SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
+    SInput::GAMEPAD::AXIS S_Axis = GLFW_GamePadAxisConverter(axis);
+
+    SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
+
+    if (g_display.show_gamepad_axis)
+    {
+      SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
+    }
   }
 }
 
@@ -306,8 +348,8 @@ int main(int argc, char* args[])
 
   glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-  glfw_window = glfwCreateWindow(mode->width/2, mode->height/2, "GLFW Window", NULL, NULL);
-  glfwSetWindowPos(glfw_window, mode->width/4, mode->height/4);
+  glfw_window = glfwCreateWindow(mode->width, mode->height, "GLFW Window", NULL, NULL);
+  //glfwSetWindowPos(glfw_window, mode->width/4, mode->height/4);
 
   if (!glfw_window)
   {
@@ -341,7 +383,34 @@ int main(int argc, char* args[])
   //bool show_another_window = false;
 
 
+  // Testing Bindings
+  enum PLAYER_EVENTS
+  {
+    P_MOVE_UP,
+    P_MOVE_LEFT,
+    P_MOVE_DOWN,
+    P_MOVE_RIGHT,
+    P_JUMP,
+    P_RUN,
+    P_CROUCH,
+    P_SHOOT,
+    P_AIM,
+    P_MELEE
+  };
 
+  SInput::Keyboard()->Bind(P_MOVE_UP, SInput::KEYBOARD::KEY::KEY_W);
+  SInput::Keyboard()->Bind(P_MOVE_LEFT, SInput::KEYBOARD::KEY::KEY_A);
+  SInput::Keyboard()->Bind(P_MOVE_DOWN, SInput::KEYBOARD::KEY::KEY_S);
+  SInput::Keyboard()->Bind(P_MOVE_RIGHT, SInput::KEYBOARD::KEY::KEY_D);
+  SInput::Keyboard()->Bind(P_JUMP, SInput::KEYBOARD::KEY::KEY_SPACE);
+  SInput::Keyboard()->Bind(P_RUN, SInput::KEYBOARD::KEY::KEY_LEFT_SHIFT);
+  SInput::Keyboard()->Bind(P_CROUCH, SInput::KEYBOARD::KEY::KEY_LEFT_CONTROL);
+
+  SInput::Mouse()->Bind(P_SHOOT, SInput::MOUSE::BUTTON::BUTTON_LEFT);
+  SInput::Mouse()->Bind(P_AIM, SInput::MOUSE::BUTTON::BUTTON_RIGHT);
+  SInput::Mouse()->Bind(P_MELEE, SInput::MOUSE::BUTTON::BUTTON_4);
+
+  //SInput::GamePad(0)
 
   // run the program as long as the window is open
   while (!glfwWindowShouldClose(glfw_window))
@@ -371,9 +440,15 @@ int main(int argc, char* args[])
     /* Render here */
     GLFW_ImGui_GL3_NewFrame();
 
+#if(true)
     g_display.DisplaySInputWindow();
 
     g_display.DisplayDebbugWindow();
+#else
+    static bool show_test_window = true;
+
+    ImGui::ShowTestWindow(&show_test_window);
+#endif
 
     // Rendering
     int display_w, display_h;

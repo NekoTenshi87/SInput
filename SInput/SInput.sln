@@ -27,6 +27,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL_Demo", "SDL_Demo\SDL_De
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_Lib", "Demo_Lib\Demo_Lib.vcxproj", "{C7A89E03-A7C4-471E-9FC2-896CF70A217D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD69E2A5-96F5-4C2B-9358-13F974E11C9C} = {DD69E2A5-96F5-4C2B-9358-13F974E11C9C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

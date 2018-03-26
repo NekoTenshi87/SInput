@@ -83,6 +83,8 @@ class ImGui_SInput_Display
     bool show_gamepad_axis = true;
     bool show_pnp_detection = true;
 
+    bool use_single_bind = true;
+
     ImVec4 color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 };
 

@@ -3,8 +3,8 @@
 
 #pragma once
 
+#include <SInput\Binding.hpp>
 #include <SInput\Enum.hpp>
-#include <unordered_map>
 
 namespace SInput
 {
@@ -98,7 +98,21 @@ namespace SInput
 
     void UpdateMods(int mods);
 
+    //////////////////////////////////////////////////////////////////////////////
+    //  Bindings
+    //////////////////////////////////////////////////////////////////////////////
+
     void Bind(int name_id, KEYBOARD::KEY key);
+
+    void UnBind(int name_id);
+
+    KEYBOARD::KEY getBindKey(const int name_id) const;
+
+    int getBindID(const KEYBOARD::KEY key) const;
+
+    bool getNextKey = false;
+
+    KEYBOARD::KEY nextKey = KEYBOARD::KEY::UNKNOWN_KEY;
 
     //////////////////////////////////////////////////////////////////////////////
     //  Enums
@@ -130,27 +144,7 @@ namespace SInput
     unsigned int currMods; // Stores the current Modifiers pressed
     unsigned int prevMods; // Stores the previous Modifiers pressed
 
-    // So when it constructs a new object it defaults to unknown
-    class KEY_INT
-    {
-    public:
-      KEY_INT() : key(KEYBOARD::UNKNOWN_KEY) {}
-      ~KEY_INT() {}
-
-      KEYBOARD::KEY key;
-    };
-    
-    class V_INT
-    {
-    public:
-      V_INT() : value(-1) {}
-      ~V_INT() {}
-
-      int value;
-    };
-
-    std::unordered_map<int, KEY_INT> name_to_key;
-    std::unordered_map<KEYBOARD::KEY, V_INT> key_to_name;
+    Binding key_binding{ "Keyboard Bindings" };
   };
 
   ////////////////////////////////////////////////////////////////////////////////

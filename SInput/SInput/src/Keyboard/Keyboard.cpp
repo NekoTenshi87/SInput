@@ -28,16 +28,6 @@ namespace SInput
     prevMods = currMods;
   }
 
-  const Enum& KeyboardDevice::GetKeysEnum() const
-  {
-    return Key_Mgr.KeysEnum;
-  }
-
-  const Enum& KeyboardDevice::GetModsEnum() const
-  {
-    return Key_Mgr.ModsEnum;
-  }
-
   bool KeyboardDevice::KeyPressed(KEYBOARD::KEY key) const
   {
     if (key > KEYBOARD::UNKNOWN_KEY && key < KEYBOARD::NUMBEROFKEYS)
@@ -131,23 +121,32 @@ namespace SInput
 
   void KeyboardDevice::Bind(int name_id, KEYBOARD::KEY key)
   {
-    KEYBOARD::KEY old_key = name_to_key[name_id].key;
+    key_binding.addValue(name_id, key);
+  }
 
-    name_to_key[name_id].key = key;
+  void KeyboardDevice::UnBind(int name_id)
+  {
+    key_binding.addValue(name_id, KEYBOARD::UNKNOWN_KEY);
+  }
 
-    int old_name = key_to_name[key].value;
+  KEYBOARD::KEY KeyboardDevice::getBindKey(const int name_id) const
+  {
+    return static_cast<KEYBOARD::KEY>(key_binding.toType(name_id));
+  }
 
-    if (old_name > -1)
-    {
-      name_to_key[old_name].key = KEYBOARD::UNKNOWN_KEY;
-    }
+  int KeyboardDevice::getBindID(const KEYBOARD::KEY key) const
+  {
+    return key_binding.toEnum(key);
+  }
 
-    if (old_key > KEYBOARD::UNKNOWN_KEY)
-    {
-      key_to_name[old_key].value = -1;
-    }
+  const Enum& KeyboardDevice::GetKeysEnum() const
+  {
+    return Key_Mgr.KeysEnum;
+  }
 
-    key_to_name[key].value = name_id;
+  const Enum& KeyboardDevice::GetModsEnum() const
+  {
+    return Key_Mgr.ModsEnum;
   }
 
   KeyboardDevice* Keyboard()

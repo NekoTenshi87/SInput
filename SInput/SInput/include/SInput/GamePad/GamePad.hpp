@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <SInput\Binding.hpp>
 #include <SInput\Enum.hpp>
 
 namespace SInput
@@ -136,6 +137,22 @@ namespace SInput
     void UpdateConnection(GAMEPAD::STATUS status);
 
     //////////////////////////////////////////////////////////////////////////////
+    //  Bindings
+    //////////////////////////////////////////////////////////////////////////////
+
+    void Bind(int name_id, GAMEPAD::BUTTON button);
+
+    void UnBind(int name_id);
+
+    GAMEPAD::BUTTON getBindButton(const int name_id) const;
+
+    int getBindID(const GAMEPAD::BUTTON key) const;
+
+    bool getNextButton = false;
+
+    GAMEPAD::BUTTON nextButton = GAMEPAD::BUTTON::UNKNOWN_BUTTON;
+
+    //////////////////////////////////////////////////////////////////////////////
     // Enums
     //////////////////////////////////////////////////////////////////////////////
 
@@ -179,6 +196,8 @@ namespace SInput
 
     GP_DATA currGP;  // Stores the current GamePad Buttons pressed
     GP_DATA prevGP;  // Stores the previous GamePad Buttons pressed
+
+    Binding button_binding{ "GamePad Bindings" };
   };
 
   ////////////////////////////////////////////////////////////////////////////////
