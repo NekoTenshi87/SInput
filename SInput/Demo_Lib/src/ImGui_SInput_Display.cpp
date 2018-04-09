@@ -259,7 +259,21 @@ void ImGui_SInput_Display::DisplaySInputWindow()
     }
     if (ImGui::CollapsingHeader("Stat Tracking"))
     {
-
+      ImGui::Checkbox("# of Times Triggered", &show_num_times_triggered);
+      ImGui::Checkbox("Average Time Pressed", &show_avg_time_pressed);
+      ImGui::Checkbox("Percent of Usage", &show_percent_of_usage);
+      ImGui::Checkbox("Most Common Next", &show_most_common_next);
+      if (show_most_common_next)
+      {
+        ImGui::SameLine();
+        ImGui::Text(" Top:");
+        ImGui::SameLine();
+        ImGui::InputInt("", &num_most_common_next);
+        if (num_most_common_next <= 0)
+        {
+          num_most_common_next = 1;
+        }
+      }
     }
     if (ImGui::CollapsingHeader("N-Grams"))
     {
@@ -269,6 +283,8 @@ void ImGui_SInput_Display::DisplaySInputWindow()
     {
 
     }
+
+    /*
     if (ImGui::CollapsingHeader("Full Scene Replay"))
     {
 
@@ -277,6 +293,7 @@ void ImGui_SInput_Display::DisplaySInputWindow()
     {
 
     }
+    */
 
 
 
