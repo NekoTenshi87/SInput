@@ -159,15 +159,4 @@ namespace SInput
     return Key_Mgr.GetVKeyboard(device_num);
   }
 
-  //void BindKeyConverter(KeyFunc func)
-  //{
-  //  if (func)
-  //  {
-  //    KeyboardDevice::func = func;
-
-
-
-  //  }
-  //}
-
 }

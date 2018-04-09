@@ -1,13 +1,2 @@
-﻿  SInput.cpp
-  MouseManager.cpp
-  Input.cpp
-  Mouse.cpp
-  KeyboardManager.cpp
-  Keyboard.cpp
-  GamePadManager.cpp
-  GamePad.cpp
-  Enum.cpp
-  DeviceManager.cpp
-  Binding.cpp
-  Generating Code...
+﻿  Keyboard.cpp
   SInput.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\Debug\SInput.lib

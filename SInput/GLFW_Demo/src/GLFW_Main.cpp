@@ -55,12 +55,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   {
     g_display.is_active ^= 1;
   }
-
-  // Close App on ESC
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-  {
-    glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
-  }
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -418,24 +412,11 @@ int main(int argc, char* args[])
     SInput::SwapBuffers();
 
     PullEvents();
-    /*
-    if (SInput::Keyboard()->ModsPressed(SInput::KEYBOARD::MOD_CTRL | SInput::KEYBOARD::MOD_SHIFT))
+
+    if (SInput::Keyboard()->KeyTriggered(SInput::KEYBOARD::KEY::KEY_ESC))
     {
-      if (SInput::Keyboard()->KeyTriggered(SInput::KEYBOARD::KEY_Q))
-      {
-        glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
-      }
-
-      if (SInput::Keyboard()->KeyReleased(SInput::KEYBOARD::KEY_B))
-      {
-        glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
-      }
-
-      if (SInput::Mouse()->ButtonTriggered(SInput::MOUSE::BUTTON_4))
-      {
-        glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
-      }
-    }*/
+      glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
+    }
 
     /* Render here */
     GLFW_ImGui_GL3_NewFrame();
