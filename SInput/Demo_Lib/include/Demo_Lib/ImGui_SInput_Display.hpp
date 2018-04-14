@@ -91,6 +91,15 @@ class ImGui_SInput_Display
 
     bool use_single_bind = true;
 
+    bool selected_key[16] = { false };
+    bool selected_mbutton[16] = { false };
+    bool selected_gpbutton[16] = { false };
+    std::string key_name[16];
+    std::string mbutton_name[16];
+    std::string gpbutton_name[16];
+    int gamepad_id = 0;
+    int gamepad_id_prev = 0;
+
     ImVec4 color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 };
 

@@ -222,12 +222,12 @@ namespace SInput
     currMouse.Status.deltaY = dY;
   }
 
-  void MouseDevice::Bind(int name_id, MOUSE::BUTTON button)
+  void MouseDevice::BindButton(int name_id, MOUSE::BUTTON button)
   {
     button_binding.addValue(name_id, button);
   }
 
-  void MouseDevice::UnBind(int name_id)
+  void MouseDevice::UnBindButton(int name_id)
   {
     button_binding.addValue(name_id, MOUSE::BUTTON::UNKNOWN_BUTTON);
   }
@@ -237,7 +237,7 @@ namespace SInput
     return static_cast<MOUSE::BUTTON>(button_binding.toType(name_id));
   }
 
-  int MouseDevice::getBindID(const MOUSE::BUTTON button) const
+  int MouseDevice::getBindButtonID(const MOUSE::BUTTON button) const
   {
     return button_binding.toEnum(button);
   }

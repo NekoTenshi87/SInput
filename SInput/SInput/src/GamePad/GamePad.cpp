@@ -174,14 +174,24 @@ namespace SInput
     }
   }
 
-  void GamePadDevice::Bind(int name_id, GAMEPAD::BUTTON button)
+  void GamePadDevice::BindButton(int name_id, GAMEPAD::BUTTON button)
   {
     button_binding.addValue(name_id, button);
   }
 
-  void GamePadDevice::UnBind(int name_id)
+  void GamePadDevice::BindAxis(int name_id, GAMEPAD::AXIS axis)
+  {
+    axis_binding.addValue(name_id, axis);
+  }
+
+  void GamePadDevice::UnBindButton(int name_id)
   {
     button_binding.addValue(name_id, GAMEPAD::BUTTON::UNKNOWN_BUTTON);
+  }
+
+  void GamePadDevice::UnBindAxis(int name_id)
+  {
+    axis_binding.addValue(name_id, GAMEPAD::AXIS::UNKNOWN_AXIS);
   }
 
   GAMEPAD::BUTTON GamePadDevice::getBindButton(const int name_id) const
@@ -189,9 +199,19 @@ namespace SInput
     return static_cast<GAMEPAD::BUTTON>(button_binding.toType(name_id));
   }
 
-  int GamePadDevice::getBindID(const GAMEPAD::BUTTON button) const
+  GAMEPAD::AXIS GamePadDevice::getBindAxis(const int name_id) const
+  {
+    return static_cast<GAMEPAD::AXIS>(axis_binding.toType(name_id));
+  }
+
+  int GamePadDevice::getBindButtonID(const GAMEPAD::BUTTON button) const
   {
     return button_binding.toEnum(button);
+  }
+
+  int GamePadDevice::getBindAxisID(const GAMEPAD::AXIS axis) const
+  {
+    return axis_binding.toEnum(axis);
   }
 
   const Enum& GamePadDevice::GetGPButtonEnum() const

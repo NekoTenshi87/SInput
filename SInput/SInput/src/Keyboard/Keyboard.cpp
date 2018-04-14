@@ -6,13 +6,7 @@
 namespace SInput
 {
   KeyboardDevice::KeyboardDevice() : currMods(0), prevMods(0)
-  {
-    Bind(0, KEYBOARD::KEY_SPACE);
-    Bind(1, KEYBOARD::KEY_E);
-    Bind(2, KEYBOARD::KEY_Q);
-    Bind(3, KEYBOARD::KEY_SPACE);
-    Bind(2, KEYBOARD::KEY_R);
-  }
+  {}
 
   KeyboardDevice::~KeyboardDevice()
   {}
@@ -119,12 +113,12 @@ namespace SInput
     currMods = mods;
   }
 
-  void KeyboardDevice::Bind(int name_id, KEYBOARD::KEY key)
+  void KeyboardDevice::BindKey(int name_id, KEYBOARD::KEY key)
   {
     key_binding.addValue(name_id, key);
   }
 
-  void KeyboardDevice::UnBind(int name_id)
+  void KeyboardDevice::UnBindKey(int name_id)
   {
     key_binding.addValue(name_id, KEYBOARD::UNKNOWN_KEY);
   }
@@ -134,7 +128,7 @@ namespace SInput
     return static_cast<KEYBOARD::KEY>(key_binding.toType(name_id));
   }
 
-  int KeyboardDevice::getBindID(const KEYBOARD::KEY key) const
+  int KeyboardDevice::getBindKeyID(const KEYBOARD::KEY key) const
   {
     return key_binding.toEnum(key);
   }

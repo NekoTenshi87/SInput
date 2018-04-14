@@ -48,17 +48,33 @@ void ImGui_SInput_Display::DisplaySInputWindow()
     }
     if (ImGui::CollapsingHeader("Key/Button Mapping"))
     {
+      ImGui::Columns(4, NULL, true);
       ImGui::Checkbox("Single Mapping", &use_single_bind);
 
-      ImGui::Columns(4, NULL, true);
+      ImGui::NextColumn();
+      ImGui::NextColumn();
+      ImGui::NextColumn();
 
-      // This is bad, redo later
-      static bool selected_key[16] = { false };
-      static bool selected_mbutton[16] = { false };
-      static bool selected_gpbutton[16] = { false };
-      static std::string key_name[16];
-      static std::string mbutton_name[16];
-      static std::string gpbutton_name[16];
+      ImGui::DragInt("GamePad ID", &gamepad_id);
+      if (gamepad_id < 0)
+      {
+        gamepad_id = 0;
+      }
+      if (gamepad_id > SInput::GAMEPAD::PAD::NUMBEROFGAMEPADS)
+      {
+        gamepad_id = SInput::GAMEPAD::PAD::NUMBEROFGAMEPADS - 1;
+      }
+      if (gamepad_id != gamepad_id_prev)
+      {
+        for (int i = 0; i < 16; ++i)
+        {
+          selected_gpbutton[i] = false;
+        }
+
+        gamepad_id_prev = gamepad_id;
+      }
+
+      ImGui::NextColumn();
 
       // Headers
       ImGui::Text("User Type");
@@ -123,13 +139,23 @@ void ImGui_SInput_Display::DisplaySInputWindow()
           }
         }
 
-        if (selected_key[i] && SInput::Keyboard()->getNextKey && SInput::Keyboard()->nextKey != SInput::KEYBOARD::KEY::UNKNOWN_KEY)
+        ImGui::PopID();
+        ImGui::SameLine();
+        ImGui::PushID(i);
+
+        if (ImGui::Button(" X "))
         {
-          SInput::Keyboard()->Bind(i, SInput::Keyboard()->nextKey);
-          selected_key[i] = false;
+          SInput::Keyboard()->UnBindKey(i);
         }
 
         ImGui::PopID();
+
+        if (selected_key[i] && SInput::Keyboard()->getNextKey && SInput::Keyboard()->nextKey != SInput::KEYBOARD::KEY::UNKNOWN_KEY)
+        {
+          SInput::Keyboard()->BindKey(i, SInput::Keyboard()->nextKey);
+          selected_key[i] = false;
+        }
+
         ImGui::NextColumn();
 
         // Mouse
@@ -172,39 +198,58 @@ void ImGui_SInput_Display::DisplaySInputWindow()
           }
         }
 
-        if (selected_mbutton[i] && SInput::Mouse()->getNextButton && SInput::Mouse()->nextButton != SInput::MOUSE::BUTTON::UNKNOWN_BUTTON)
+        ImGui::PopID();
+        ImGui::SameLine();
+        ImGui::PushID(10 + i);
+
+        if (ImGui::Button(" X "))
         {
-          SInput::Mouse()->Bind(i, SInput::Mouse()->nextButton);
-          selected_mbutton[i] = false;
+          SInput::Mouse()->UnBindButton(i);
         }
 
         ImGui::PopID();
+
+        if (selected_mbutton[i] && SInput::Mouse()->getNextButton && SInput::Mouse()->nextButton != SInput::MOUSE::BUTTON::UNKNOWN_BUTTON)
+        {
+          SInput::Mouse()->BindButton(i, SInput::Mouse()->nextButton);
+          selected_mbutton[i] = false;
+        }
+
         ImGui::NextColumn();
 
         // GamePad
-        e_value = SInput::GamePad(0)->getBindButton(i);
+        e_value = SInput::GamePad(gamepad_id)->getBindButton(i);
+        int a_value = SInput::GamePad(gamepad_id)->getBindAxis(i);
 
         ImGui::PushID(20 + i);
 
         if (selected_gpbutton[i])
         {
-          gpbutton_name[i] = std::string("PRESS GAMEPAD BUTTON");
+          gpbutton_name[i] = std::string("PRESS GAMEPAD BUTTON/AXIS");
         }
         else
         {
           if (e_value == SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
           {
-            gpbutton_name[i] = std::string("-- NOT ASSIGNED --");
+            if (a_value == SInput::GAMEPAD::AXIS::UNKNOWN_AXIS)
+            {
+              gpbutton_name[i] = std::string("-- NOT ASSIGNED --");
+            }
+            else
+            {
+              gpbutton_name[i] = SInput::GamePad(gamepad_id)->GetGPAxisEnum().toStr(a_value);
+            }
           }
           else
           {
-            gpbutton_name[i] = SInput::GamePad(0)->GetGPButtonEnum().toStr(e_value);
+            gpbutton_name[i] = SInput::GamePad(gamepad_id)->GetGPButtonEnum().toStr(e_value);
           }
         }
 
         if (ImGui::Button(gpbutton_name[i].c_str()))
         {
-          SInput::GamePad(0)->getNextButton = true;
+          SInput::GamePad(gamepad_id)->getNextButton = true;
+          SInput::GamePad(gamepad_id)->getNextAxis = true;
           selected_gpbutton[i] = true;
 
           if (use_single_bind)
@@ -221,13 +266,31 @@ void ImGui_SInput_Display::DisplaySInputWindow()
           }
         }
 
-        if (selected_gpbutton[i] && SInput::GamePad(0)->getNextButton && SInput::GamePad(0)->nextButton != SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
+        ImGui::PopID();
+        ImGui::SameLine();
+        ImGui::PushID(20 + i);
+
+        if (ImGui::Button(" X "))
         {
-          SInput::GamePad(0)->Bind(i, SInput::GamePad(0)->nextButton);
-          selected_gpbutton[i] = false;
+          SInput::GamePad(gamepad_id)->UnBindButton(i);
+          SInput::GamePad(gamepad_id)->UnBindAxis(i);
         }
 
         ImGui::PopID();
+
+        if (selected_gpbutton[i] && SInput::GamePad(gamepad_id)->getNextButton && SInput::GamePad(gamepad_id)->nextButton != SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
+        {
+          SInput::GamePad(gamepad_id)->BindButton(i, SInput::GamePad(gamepad_id)->nextButton);
+          SInput::GamePad(gamepad_id)->UnBindAxis(i);
+          selected_gpbutton[i] = false;
+        }
+        else if (selected_gpbutton[i] && SInput::GamePad(gamepad_id)->getNextAxis && SInput::GamePad(gamepad_id)->nextAxis != SInput::GAMEPAD::AXIS::UNKNOWN_AXIS)
+        {
+          SInput::GamePad(gamepad_id)->BindAxis(i, SInput::GamePad(gamepad_id)->nextAxis);
+          SInput::GamePad(gamepad_id)->UnBindButton(i);
+          selected_gpbutton[i] = false;
+        }
+
         ImGui::NextColumn();
       }
 
@@ -244,10 +307,18 @@ void ImGui_SInput_Display::DisplaySInputWindow()
         SInput::Mouse()->getNextButton = false;
       }
 
-      if (SInput::GamePad(0)->getNextButton && SInput::GamePad(0)->nextButton != SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
+      if (SInput::GamePad(gamepad_id)->getNextButton && SInput::GamePad(gamepad_id)->nextButton != SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON)
       {
-        SInput::GamePad(0)->nextButton = SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON;
-        SInput::GamePad(0)->getNextButton = false;
+        SInput::GamePad(gamepad_id)->nextButton = SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON;
+        SInput::GamePad(gamepad_id)->getNextButton = false;
+        SInput::GamePad(gamepad_id)->getNextAxis = false;
+      }
+
+      if (SInput::GamePad(gamepad_id)->getNextAxis && SInput::GamePad(gamepad_id)->nextAxis != SInput::GAMEPAD::AXIS::UNKNOWN_AXIS)
+      {
+        SInput::GamePad(gamepad_id)->nextAxis = SInput::GAMEPAD::AXIS::UNKNOWN_AXIS;
+        SInput::GamePad(gamepad_id)->getNextButton = false;
+        SInput::GamePad(gamepad_id)->getNextAxis = false;
       }
 
       ImGui::Columns(1);
@@ -294,9 +365,6 @@ void ImGui_SInput_Display::DisplaySInputWindow()
 
     }
     */
-
-
-
 
     ImGui::End();
   }

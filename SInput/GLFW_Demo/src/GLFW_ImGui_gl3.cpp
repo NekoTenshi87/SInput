@@ -290,78 +290,78 @@ bool GLFW_ImGui_GL3_CreateDeviceObjects()
 
 void GLFW_ImGui_GL3_InvalidateDeviceObjects()
 {
-    if (g_VaoHandle) glDeleteVertexArrays(1, &g_VaoHandle);
-    if (g_VboHandle) glDeleteBuffers(1, &g_VboHandle);
-    if (g_ElementsHandle) glDeleteBuffers(1, &g_ElementsHandle);
-    g_VaoHandle = g_VboHandle = g_ElementsHandle = 0;
+  if (g_VaoHandle) glDeleteVertexArrays(1, &g_VaoHandle);
+  if (g_VboHandle) glDeleteBuffers(1, &g_VboHandle);
+  if (g_ElementsHandle) glDeleteBuffers(1, &g_ElementsHandle);
+  g_VaoHandle = g_VboHandle = g_ElementsHandle = 0;
 
-    if (g_ShaderHandle && g_VertHandle) glDetachShader(g_ShaderHandle, g_VertHandle);
-    if (g_VertHandle) glDeleteShader(g_VertHandle);
-    g_VertHandle = 0;
+  if (g_ShaderHandle && g_VertHandle) glDetachShader(g_ShaderHandle, g_VertHandle);
+  if (g_VertHandle) glDeleteShader(g_VertHandle);
+  g_VertHandle = 0;
 
-    if (g_ShaderHandle && g_FragHandle) glDetachShader(g_ShaderHandle, g_FragHandle);
-    if (g_FragHandle) glDeleteShader(g_FragHandle);
-    g_FragHandle = 0;
+  if (g_ShaderHandle && g_FragHandle) glDetachShader(g_ShaderHandle, g_FragHandle);
+  if (g_FragHandle) glDeleteShader(g_FragHandle);
+  g_FragHandle = 0;
 
-    if (g_ShaderHandle) glDeleteProgram(g_ShaderHandle);
-    g_ShaderHandle = 0;
+  if (g_ShaderHandle) glDeleteProgram(g_ShaderHandle);
+  g_ShaderHandle = 0;
 
-    if (g_FontTexture)
-    {
-        glDeleteTextures(1, &g_FontTexture);
-        ImGui::GetIO().Fonts->TexID = 0;
-        g_FontTexture = 0;
-    }
+  if (g_FontTexture)
+  {
+      glDeleteTextures(1, &g_FontTexture);
+      ImGui::GetIO().Fonts->TexID = 0;
+      g_FontTexture = 0;
+  }
 }
 
 bool GLFW_ImGui_GL3_Init(GLFWwindow* window, bool install_callbacks)
 {
-    g_Window = window;
+  g_Window = window;
 
-    ImGuiIO& io = ImGui::GetIO();
-    io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;                         // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
-    io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
-    io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
-    io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
-    io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
-    io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
-    io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
-    io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
-    io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
-    io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
-    io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
-    io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
-    io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
-    io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
-    io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
-    io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
-    io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
-    io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
-    io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+  ImGuiIO& io = ImGui::GetIO();
+  io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;                         // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+  io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+  io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+  io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+  io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+  io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
+  io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
+  io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+  io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+  io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+  io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+  io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+  io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+  io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+  io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+  io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+  io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+  io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+  io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
-    io.RenderDrawListsFn = GLFW_ImGui_GL3_RenderDrawLists;       // Alternatively you can set this to NULL and call ImGui::GetDrawData() after ImGui::Render() to get the same ImDrawData pointer.
-    io.SetClipboardTextFn = GLFW_ImGui_GL3_SetClipboardText;
-    io.GetClipboardTextFn = GLFW_ImGui_GL3_GetClipboardText;
-    io.ClipboardUserData = g_Window;
+  io.RenderDrawListsFn = GLFW_ImGui_GL3_RenderDrawLists;       // Alternatively you can set this to NULL and call ImGui::GetDrawData() after ImGui::Render() to get the same ImDrawData pointer.
+  io.SetClipboardTextFn = GLFW_ImGui_GL3_SetClipboardText;
+  io.GetClipboardTextFn = GLFW_ImGui_GL3_GetClipboardText;
+  io.ClipboardUserData = g_Window;
 #ifdef _WIN32
-    io.ImeWindowHandle = glfwGetWin32Window(g_Window);
+  io.ImeWindowHandle = glfwGetWin32Window(g_Window);
 #endif
-    /*
-    if (install_callbacks)
-    {
-        glfwSetMouseButtonCallback(window, ImGui_ImplGlfwGL3_MouseButtonCallback);
-        glfwSetScrollCallback(window, ImGui_ImplGlfwGL3_ScrollCallback);
-        glfwSetKeyCallback(window, ImGui_ImplGlfwGL3_KeyCallback);    */
-        glfwSetCharCallback(window, GLFW_ImGui_GL3_CharCallback);
-    //}
+  /*
+  if (install_callbacks)
+  {
+      glfwSetMouseButtonCallback(window, ImGui_ImplGlfwGL3_MouseButtonCallback);
+      glfwSetScrollCallback(window, ImGui_ImplGlfwGL3_ScrollCallback);
+      glfwSetKeyCallback(window, ImGui_ImplGlfwGL3_KeyCallback);    */
+      glfwSetCharCallback(window, GLFW_ImGui_GL3_CharCallback);
+  //}
 
-    return true;
+  return true;
 }
 
 void GLFW_ImGui_GL3_Shutdown()
 {
   GLFW_ImGui_GL3_InvalidateDeviceObjects();
-    ImGui::Shutdown();
+  ImGui::Shutdown();
 }
 
 void GLFW_ImGui_GL3_NewFrame()

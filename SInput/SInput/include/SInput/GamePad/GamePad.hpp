@@ -140,17 +140,29 @@ namespace SInput
     //  Bindings
     //////////////////////////////////////////////////////////////////////////////
 
-    void Bind(int name_id, GAMEPAD::BUTTON button);
+    void BindButton(int name_id, GAMEPAD::BUTTON button);
 
-    void UnBind(int name_id);
+    void BindAxis(int name_id, GAMEPAD::AXIS axis);
+
+    void UnBindButton(int name_id);
+
+    void UnBindAxis(int name_id);
 
     GAMEPAD::BUTTON getBindButton(const int name_id) const;
 
-    int getBindID(const GAMEPAD::BUTTON key) const;
+    GAMEPAD::AXIS getBindAxis(const int name_id) const;
+
+    int getBindButtonID(const GAMEPAD::BUTTON key) const;
+    
+    int getBindAxisID(const GAMEPAD::AXIS axis) const;
 
     bool getNextButton = false;
 
+    bool getNextAxis = false;
+
     GAMEPAD::BUTTON nextButton = GAMEPAD::BUTTON::UNKNOWN_BUTTON;
+
+    GAMEPAD::AXIS nextAxis = GAMEPAD::AXIS::UNKNOWN_AXIS;
 
     //////////////////////////////////////////////////////////////////////////////
     // Enums
@@ -197,7 +209,8 @@ namespace SInput
     GP_DATA currGP;  // Stores the current GamePad Buttons pressed
     GP_DATA prevGP;  // Stores the previous GamePad Buttons pressed
 
-    Binding button_binding{ "GamePad Bindings" };
+    Binding button_binding{ "GamePad Button Bindings" };
+    Binding axis_binding{ "GamePad Axis Bindings" };
   };
 
   ////////////////////////////////////////////////////////////////////////////////

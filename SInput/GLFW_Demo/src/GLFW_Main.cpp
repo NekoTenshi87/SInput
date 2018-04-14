@@ -40,7 +40,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
       SInput::KEYBOARD::ACTION S_Action = GLFW_KeyActionConverter(action);
 
-      if (S_Action != SInput::KEYBOARD::KEY::UNKNOWN_KEY)
+      if (S_Action == SInput::KEYBOARD::ACTION::PRESSED)
       {
         SInput::Keyboard()->nextKey = GLFW_KeyConverter(key);
       }
@@ -82,7 +82,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     {
       SInput::MOUSE::ACTION S_Action = GLFW_MouseActionConverter(action);
 
-      if (S_Action != SInput::MOUSE::UNKNOWN_ACTION)
+      if (S_Action == SInput::MOUSE::ACTION::PRESSED)
       {
         SInput::Mouse()->nextButton = GLFW_MouseConverter(button);
       }
@@ -209,7 +209,7 @@ void gamepad_button_callback(GLFWwindow* window, int gp_num, int button, unsigne
     {
       SInput::GAMEPAD::ACTION S_Action = GLFW_GamePadActionConverter(action);
 
-      if (S_Action != SInput::GAMEPAD::UNKNOWN_ACTION)
+      if (S_Action == SInput::GAMEPAD::ACTION::PRESSED)
       {
         SInput::GamePad(gp_num)->nextButton = GLFW_GamePadButtonConverter(button);
       }
@@ -228,6 +228,16 @@ void gamepad_axis_callback(GLFWwindow* window, int gp_num, int axis, float delta
     if (g_display.show_gamepad_axis)
     {
       SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
+    }
+  }
+  else
+  {
+    if (SInput::GamePad(gp_num)->getNextAxis && SInput::GamePad(gp_num)->nextAxis == SInput::GAMEPAD::AXIS::UNKNOWN_AXIS)
+    {
+      if (std::abs(delta) > 0.5f)
+      {
+        SInput::GamePad(gp_num)->nextAxis = GLFW_GamePadAxisConverter(axis);
+      }
     }
   }
 }
@@ -371,11 +381,6 @@ int main(int argc, char* args[])
 
   SInput::Init();
 
-  
-
-  //bool show_log_window = true;
-  //bool show_another_window = false;
-
 
   // Testing Bindings
   enum PLAYER_EVENTS
@@ -392,19 +397,29 @@ int main(int argc, char* args[])
     P_MELEE
   };
 
-  SInput::Keyboard()->Bind(P_MOVE_UP, SInput::KEYBOARD::KEY::KEY_W);
-  SInput::Keyboard()->Bind(P_MOVE_LEFT, SInput::KEYBOARD::KEY::KEY_A);
-  SInput::Keyboard()->Bind(P_MOVE_DOWN, SInput::KEYBOARD::KEY::KEY_S);
-  SInput::Keyboard()->Bind(P_MOVE_RIGHT, SInput::KEYBOARD::KEY::KEY_D);
-  SInput::Keyboard()->Bind(P_JUMP, SInput::KEYBOARD::KEY::KEY_SPACE);
-  SInput::Keyboard()->Bind(P_RUN, SInput::KEYBOARD::KEY::KEY_LEFT_SHIFT);
-  SInput::Keyboard()->Bind(P_CROUCH, SInput::KEYBOARD::KEY::KEY_LEFT_CONTROL);
+  SInput::Keyboard()->BindKey(P_MOVE_UP, SInput::KEYBOARD::KEY::KEY_W);
+  SInput::Keyboard()->BindKey(P_MOVE_LEFT, SInput::KEYBOARD::KEY::KEY_A);
+  SInput::Keyboard()->BindKey(P_MOVE_DOWN, SInput::KEYBOARD::KEY::KEY_S);
+  SInput::Keyboard()->BindKey(P_MOVE_RIGHT, SInput::KEYBOARD::KEY::KEY_D);
+  SInput::Keyboard()->BindKey(P_JUMP, SInput::KEYBOARD::KEY::KEY_SPACE);
+  SInput::Keyboard()->BindKey(P_RUN, SInput::KEYBOARD::KEY::KEY_LEFT_SHIFT);
+  SInput::Keyboard()->BindKey(P_CROUCH, SInput::KEYBOARD::KEY::KEY_LEFT_CONTROL);
 
-  SInput::Mouse()->Bind(P_SHOOT, SInput::MOUSE::BUTTON::BUTTON_LEFT);
-  SInput::Mouse()->Bind(P_AIM, SInput::MOUSE::BUTTON::BUTTON_RIGHT);
-  SInput::Mouse()->Bind(P_MELEE, SInput::MOUSE::BUTTON::BUTTON_4);
+  SInput::Mouse()->BindButton(P_SHOOT, SInput::MOUSE::BUTTON::BUTTON_LEFT);
+  SInput::Mouse()->BindButton(P_AIM, SInput::MOUSE::BUTTON::BUTTON_RIGHT);
+  SInput::Mouse()->BindButton(P_MELEE, SInput::MOUSE::BUTTON::BUTTON_4);
 
-  //SInput::GamePad(0)
+  SInput::GamePad(0)->BindButton(P_MOVE_UP, SInput::GAMEPAD::BUTTON::BUTTON_11);
+  SInput::GamePad(0)->BindButton(P_MOVE_LEFT, SInput::GAMEPAD::BUTTON::BUTTON_14);
+  SInput::GamePad(0)->BindButton(P_MOVE_DOWN, SInput::GAMEPAD::BUTTON::BUTTON_13);
+  SInput::GamePad(0)->BindButton(P_MOVE_RIGHT, SInput::GAMEPAD::BUTTON::BUTTON_12);
+  SInput::GamePad(0)->BindButton(P_JUMP, SInput::GAMEPAD::BUTTON::BUTTON_1);
+  SInput::GamePad(0)->BindButton(P_RUN, SInput::GAMEPAD::BUTTON::BUTTON_5);
+  SInput::GamePad(0)->BindButton(P_CROUCH, SInput::GAMEPAD::BUTTON::BUTTON_2);
+  SInput::GamePad(0)->BindButton(P_MELEE, SInput::GAMEPAD::BUTTON::BUTTON_3);
+
+  SInput::GamePad(0)->BindAxis(P_SHOOT, SInput::GAMEPAD::AXIS::RIGHT_TRIGGER_AXIS);
+  SInput::GamePad(0)->BindAxis(P_AIM, SInput::GAMEPAD::AXIS::LEFT_TRIGGER_AXIS);
 
   // run the program as long as the window is open
   while (!glfwWindowShouldClose(glfw_window))

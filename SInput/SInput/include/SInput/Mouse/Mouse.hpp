@@ -117,13 +117,13 @@ namespace SInput
     //  Bindings
     //////////////////////////////////////////////////////////////////////////////
 
-    void Bind(int name_id, MOUSE::BUTTON button);
+    void BindButton(int name_id, MOUSE::BUTTON button);
 
-    void UnBind(int name_id);
+    void UnBindButton(int name_id);
 
     MOUSE::BUTTON getBindButton(const int name_id) const;
 
-    int getBindID(const MOUSE::BUTTON button) const;
+    int getBindButtonID(const MOUSE::BUTTON button) const;
 
     bool getNextButton = false;
 

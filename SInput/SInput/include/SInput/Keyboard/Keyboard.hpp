@@ -102,13 +102,13 @@ namespace SInput
     //  Bindings
     //////////////////////////////////////////////////////////////////////////////
 
-    void Bind(int name_id, KEYBOARD::KEY key);
+    void BindKey(int name_id, KEYBOARD::KEY key);
 
-    void UnBind(int name_id);
+    void UnBindKey(int name_id);
 
     KEYBOARD::KEY getBindKey(const int name_id) const;
 
-    int getBindID(const KEYBOARD::KEY key) const;
+    int getBindKeyID(const KEYBOARD::KEY key) const;
 
     bool getNextKey = false;
 
