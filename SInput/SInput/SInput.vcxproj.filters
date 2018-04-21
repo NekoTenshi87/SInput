@@ -78,6 +78,15 @@
     <ClCompile Include="src\Binding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Serialize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Stats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NGram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\SInput\GamePad\GamePad.hpp">
@@ -123,6 +132,15 @@
       <Filter>External Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\SInput\Binding.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Serialize.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\Stats.hpp">
+      <Filter>External Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SInput\NGram.hpp">
       <Filter>External Header Files</Filter>
     </ClInclude>
   </ItemGroup>

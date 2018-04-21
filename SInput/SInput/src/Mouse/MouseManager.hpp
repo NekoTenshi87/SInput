@@ -16,6 +16,8 @@ namespace SInput
 
     void SwapBuffers();
 
+    void RunMonkey();
+
     MouseDevice* GetMouse();
 
     MouseDevice* GetVMouse(unsigned num);
@@ -25,7 +27,7 @@ namespace SInput
   private:
 
     MouseDevice mouse;
-    std::unordered_map<unsigned, MouseDevice> v_mice;
+    std::unordered_map<unsigned, VMouseDevice> v_mice;
   };
 
   extern MouseManager Mouse_Mgr;

@@ -25,13 +25,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
       SInput::KEYBOARD::KEY S_Key = GLFW_KeyConverter(key);
 
-      SInput::Keyboard()->UpdateKey(S_Key, S_Action);
       SInput::Keyboard()->UpdateMods(GLFW_ModConverter(mods));
-
-      if (g_display.show_keys)
-      {
-        SInput::Keyboard()->Print(S_Key);
-      }
+      SInput::Keyboard()->UpdateKey(S_Key, S_Action, g_display.show_keys);
     }
   }
   else
@@ -67,13 +62,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     {
       SInput::MOUSE::BUTTON S_Button = GLFW_MouseConverter(button);
 
-      SInput::Mouse()->UpdateButton(S_Button, S_Action);
       SInput::Keyboard()->UpdateMods(GLFW_ModConverter(mods));
-
-      if (g_display.show_mouse_buttons)
-      {
-        SInput::Mouse()->Print(S_Button);
-      }
+      SInput::Mouse()->UpdateButton(S_Button, S_Action, g_display.show_mouse_buttons);
     }
   }
   else
@@ -101,11 +91,11 @@ void mouse_enter_callback(GLFWwindow* window, int enter)
     switch (enter)
     {
       case GLFW_FALSE:
-        SInput::Mouse()->UpdateMouseEnter(false);
+        SInput::Mouse()->UpdateMouseEnter(false, g_display.show_mouse_enter);
         break;
 
       case GLFW_TRUE:
-        SInput::Mouse()->UpdateMouseEnter(true);
+        SInput::Mouse()->UpdateMouseEnter(true, g_display.show_mouse_enter);
         break;
 
       default:
@@ -120,12 +110,7 @@ void mouse_pos_callback(GLFWwindow* window, double posX, double posY)
   {
     SInput::MousePos pos(static_cast<int>(std::floor(posX)), static_cast<int>(std::floor(posY)));
 
-    SInput::Mouse()->UpdateMousePos(pos);
-
-    if (g_display.show_mouse_pos)
-    {
-      SInput::Mouse()->PrintPos();
-    }
+    SInput::Mouse()->UpdateMousePos(pos, g_display.show_mouse_pos);
   }
 }
 
@@ -133,12 +118,7 @@ void mouse_scroll_callback(GLFWwindow* window, double dX, double dY)
 {
   if (!g_display.is_active)
   {
-    SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)));
-
-    if (g_display.show_mouse_scroll)
-    {
-      SInput::Mouse()->PrintScoll();
-    }
+    SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)), g_display.show_mouse_scroll);
   }
   else
   {
@@ -167,20 +147,15 @@ void gamepad_connection_callback(GLFWwindow* window, int gp_num, int connect)
   switch (connect)
   {
   case GLFW_FALSE:
-    SInput::GamePad(gp_num)->UpdateConnection(SInput::GAMEPAD::DISCONNECTED);
+    SInput::GamePad(gp_num)->UpdateConnection(gp_num, SInput::GAMEPAD::DISCONNECTED, g_display.show_gamepad_connect);
     break;
 
   case GLFW_TRUE:
-    SInput::GamePad(gp_num)->UpdateConnection(SInput::GAMEPAD::CONNECTED);
+    SInput::GamePad(gp_num)->UpdateConnection(gp_num, SInput::GAMEPAD::CONNECTED, g_display.show_gamepad_connect);
     break;
 
   default:
     break;
-  }
-
-  if (g_display.show_gamepad_connect)
-  {
-    SInput::GamePad(gp_num)->PrintConnection(gp_num +1);
   }
 }
 
@@ -195,12 +170,7 @@ void gamepad_button_callback(GLFWwindow* window, int gp_num, int button, unsigne
     {
       SInput::GAMEPAD::BUTTON S_Button = GLFW_GamePadButtonConverter(button);
 
-      SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
-
-      if (g_display.show_gamepad_buttons)
-      {
-        SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
-      }
+      SInput::GamePad(gp_num)->UpdateButton(gp_num, S_Button, S_Action, g_display.show_gamepad_buttons);
     }
   }
   else
@@ -223,12 +193,7 @@ void gamepad_axis_callback(GLFWwindow* window, int gp_num, int axis, float delta
   {
     SInput::GAMEPAD::AXIS S_Axis = GLFW_GamePadAxisConverter(axis);
 
-    SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
-
-    if (g_display.show_gamepad_axis)
-    {
-      SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
-    }
+    SInput::GamePad(gp_num)->UpdateAxis(gp_num, S_Axis, delta, g_display.show_gamepad_axis);
   }
   else
   {
@@ -424,7 +389,13 @@ int main(int argc, char* args[])
   // run the program as long as the window is open
   while (!glfwWindowShouldClose(glfw_window))
   {
-    SInput::SwapBuffers();
+    if (!g_display.is_active)
+    {
+      SInput::SwapBuffers();
+      SInput::RunMonkey();
+    }
+
+    SInput::EnableNGram(g_display.is_active);
 
     PullEvents();
 
@@ -437,9 +408,7 @@ int main(int argc, char* args[])
     GLFW_ImGui_GL3_NewFrame();
 
 #if(true)
-    g_display.DisplaySInputWindow();
-
-    g_display.DisplayDebbugWindow();
+    g_display.DisplayAll();
 #else
     static bool show_test_window = true;
 

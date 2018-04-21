@@ -14,15 +14,19 @@ namespace SInput
     NUMBEROFDEVICES
   };
   #undef ENUM_NAME
-  /*
-  class Device
+
+  enum DEVICETYPE
   {
-  public:
-    Device() {}
-    virtual ~Device() {}
+    UNKNOWN_DEVICE_TYPE = -1,
+    BUILT_IN_DEVICE,
+    VIRTUAL_DEVICE
+  };
 
-    virtual void SwapBuffers() {}
-  };*/
-
-
+  struct DeviceData
+  {
+    DEVICE device;
+    DEVICETYPE device_type;
+    int device_id;
+    void* data;
+  };
 }

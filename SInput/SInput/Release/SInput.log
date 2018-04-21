@@ -1,5 +1,5 @@
-﻿  DeviceManager.cpp
-  Enum.cpp
+﻿  Binding.cpp
+  DeviceManager.cpp
   GamePad.cpp
   GamePadManager.cpp
   Keyboard.cpp
@@ -7,5 +7,9 @@
   Mouse.cpp
   Input.cpp
   MouseManager.cpp
+  NGram.cpp
+  Serialize.cpp
   SInput.cpp
+src\SInput.cpp(23): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Stats.cpp
   SInput.vcxproj -> E:\Users\James\Documents\GitHub\SInput\SInput\Release\SInput.lib

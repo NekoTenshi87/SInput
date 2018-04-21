@@ -1,6 +1,9 @@
 
 #include "MouseManager.hpp"
 #include <SInput\Mouse\Mouse.hpp>
+#include <SInput\Serialize.hpp>
+#include <SInput\Stats.hpp>
+#include <SInput\SInput.hpp>
 #include <iostream>
 
 namespace SInput
@@ -12,14 +15,31 @@ namespace SInput
   MousePos::~MousePos() {}
 
   MouseDevice::MouseDevice()
-  {}
-
-  MouseDevice::~MouseDevice()
-  {}
-
-  void MouseDevice::Print(MOUSE::BUTTON button)
   {
-    std::clog << "Mouse: " << GetButtonEnum().toStr(button) << " was " << (currMouse.Button[button].state == 1 ? "Pressed." : "Released.") << std::endl;
+    device_type = DEVICETYPE::BUILT_IN_DEVICE;
+  }
+
+  MouseDevice::~MouseDevice() {}
+
+  VMouseDevice::VMouseDevice() : MouseDevice()
+  {
+    device_type = DEVICETYPE::VIRTUAL_DEVICE;
+  }
+
+  VMouseDevice::~VMouseDevice() {}
+
+  void MouseDevice::PrintButton(MOUSE::BUTTON button)
+  {
+    std::clog << "Mouse: ";
+
+    SInput::Keyboard()->PrintMods(KEYBOARD::KEY::UNKNOWN_KEY);
+
+    std::clog << GetButtonEnum().toStr(button) << " was " << (currMouse.Button[button].state == 1 ? "Pressed." : "Released.") << std::endl;
+  }
+
+  void MouseDevice::PrintEnter()
+  {
+    std::clog << "Mouse: " << (currMouse.Status.inside ? "Entered." : "Left.") << std::endl;
   }
 
   void MouseDevice::PrintPos()
@@ -195,31 +215,87 @@ namespace SInput
     return true;
   }
 
-  void MouseDevice::UpdateButton(MOUSE::BUTTON button, MOUSE::ACTION action)
+  void MouseDevice::UpdateButton(MOUSE::BUTTON button, MOUSE::ACTION action, bool debugShow)
   {
     if (action > MOUSE::UNKNOWN_ACTION)
     {
       if (button > MOUSE::UNKNOWN_BUTTON && button < MOUSE::NUMBEROFMOUSEBUTTONS)
       {
         currMouse.Button[button].state = action;
+
+        DeviceData device;
+        device.device = DEVICE::MOUSE;
+        device.device_type = device_type;
+        device.device_id = device_id;
+
+        SerializeMouse mouse_data;
+        mouse_data.action = action;
+        mouse_data.button = button;
+        mouse_data.time = currTime;
+
+        serialize.AddDeviceData(device, &mouse_data);
+        stats.AddStatData(device, &mouse_data);
+
+        if (debugShow)
+        {
+          PrintButton(button);
+        }
       }
     }
   }
 
-  void MouseDevice::UpdateMouseEnter(bool action)
+  void MouseDevice::UpdateMouseEnter(bool action, bool debugShow)
   {
     currMouse.Status.inside = action;
+
+    if (debugShow)
+    {
+      PrintEnter();
+    }
   }
 
-  void MouseDevice::UpdateMousePos(MousePos pos)
+  void MouseDevice::UpdateMousePos(MousePos pos, bool debugShow)
   {
     currMouse.Status.pos = pos;
+
+    if (debugShow)
+    {
+      PrintPos();
+    }
   }
 
-  void MouseDevice::UpdateMouseWheel(int dX, int dY)
+  void MouseDevice::UpdateMouseWheel(int dX, int dY, bool debugShow)
   {
     currMouse.Status.deltaX = dX;
     currMouse.Status.deltaY = dY;
+
+    if (debugShow)
+    {
+      PrintScoll();
+    }
+  }
+
+  void MouseDevice::Monkey(bool enable)
+  {
+    if (monkey != enable)
+    {
+      monkey = enable;
+    }
+  }
+
+  bool MouseDevice::IsMonkey()
+  {
+    return monkey;
+  }
+
+  void MouseDevice::SetMonkeyWait(int wait)
+  {
+    monkey_wait = wait;
+  }
+
+  int MouseDevice::GetMonkeyWait()
+  {
+    return monkey_wait;
   }
 
   void MouseDevice::BindButton(int name_id, MOUSE::BUTTON button)

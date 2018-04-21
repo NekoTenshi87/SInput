@@ -19,7 +19,9 @@ namespace SInput
     {
       UNKNOWN_ACTION = -1,
       RELEASED,
-      PRESSED
+      PRESSED,
+      MOVED,
+      SCROLLED
     };
 
     enum BUTTON
@@ -63,7 +65,9 @@ namespace SInput
     //  Public Functions
     //////////////////////////////////////////////////////////////////////////////
     
-    void Print(MOUSE::BUTTON button);
+    void PrintButton(MOUSE::BUTTON button);
+
+    void PrintEnter();
 
     void PrintPos();
 
@@ -105,13 +109,21 @@ namespace SInput
 
     bool InArea(int posX_left, int posX_right, int posY_top, int posY_bottom);
 
-    void UpdateButton(MOUSE::BUTTON button, MOUSE::ACTION action);
+    void UpdateButton(MOUSE::BUTTON button, MOUSE::ACTION action, bool debugShow = false);
 
-    void UpdateMouseEnter(bool action);
+    void UpdateMouseEnter(bool action, bool debugShow = false);
 
-    void UpdateMousePos(MousePos pos);
+    void UpdateMousePos(MousePos pos, bool debugShow = false);
 
-    void UpdateMouseWheel(int dX, int dY);
+    void UpdateMouseWheel(int dX, int dY, bool debugShow = false);
+
+    void Monkey(bool enable);
+
+    bool IsMonkey();
+
+    void SetMonkeyWait(int wait);
+
+    int GetMonkeyWait();
 
     //////////////////////////////////////////////////////////////////////////////
     //  Bindings
@@ -166,7 +178,20 @@ namespace SInput
     MOUSE_DATA currMouse;  // Stores the current Mouse Buttons pressed
     MOUSE_DATA prevMouse;  // Stores the previous Mouse Buttons pressed
 
+    DEVICETYPE device_type;
+    int device_id;
+
     Binding button_binding{ "Mouse Bindings" };
+
+    bool monkey = false;
+    int monkey_wait = 0;
+  };
+
+  class VMouseDevice : public MouseDevice
+  {
+  public:
+    VMouseDevice();
+    ~VMouseDevice();
   };
 
   ////////////////////////////////////////////////////////////////////////////////

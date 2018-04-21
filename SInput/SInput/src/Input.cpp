@@ -42,6 +42,11 @@ namespace SInput
     Dev_Mgr.SwapBuffers();
   }
 
+  void Input::RunMonkey()
+  {
+    Dev_Mgr.RunMonkey();
+  }
+
   /*
   void Input::PrintEvent(sf::Event& event_)
   {

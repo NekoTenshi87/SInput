@@ -63,4 +63,17 @@ namespace SInput
       }
     }
   }
+
+  void DeviceManager::RunMonkey()
+  {
+    for (size_t i = 0; i < DEVICE::NUMBEROFDEVICES; ++i)
+    {
+      DevMgrPtr* mgr = device_managers[i];
+
+      if (mgr)
+      {
+        mgr->RunMonkey();
+      }
+    }
+  }
 }

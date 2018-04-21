@@ -3,6 +3,9 @@
 #include <SInput\DeviceList.hpp>
 #include <SInput\Enum.hpp>
 #include <SInput\Event.hpp>
+#include <SInput\Serialize.hpp>
+#include <SInput\Stats.hpp>
+#include <SInput\NGram.hpp>
 
 #include <fstream>
 #include <queue>
@@ -42,6 +45,8 @@ namespace SInput
     //void Init();
 
     void SwapBuffers();
+
+    void RunMonkey();
 
     //////////////////////////////////////////////////////////////////////////////
     //  Global Debugging Functions

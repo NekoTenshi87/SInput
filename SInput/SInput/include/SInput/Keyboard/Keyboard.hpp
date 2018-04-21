@@ -5,6 +5,7 @@
 
 #include <SInput\Binding.hpp>
 #include <SInput\Enum.hpp>
+#include <SInput\Device.hpp>
 
 namespace SInput
 {
@@ -78,7 +79,9 @@ namespace SInput
     //  Public Functions
     //////////////////////////////////////////////////////////////////////////////
 
-    void Print(KEYBOARD::KEY key);
+    void PrintKey(KEYBOARD::KEY key);
+
+    void PrintMods(KEYBOARD::KEY key);
 
     void SwapBuffers();
 
@@ -90,13 +93,23 @@ namespace SInput
 
     bool KeyReleased(KEYBOARD::KEY key) const;
 
+    KEYBOARD::MOD KeyToMod(KEYBOARD::KEY key) const;
+
     bool ModsPressed(int mods) const;
 
     bool ModsReleased(int mods) const;
 
-    void UpdateKey(KEYBOARD::KEY key, KEYBOARD::ACTION action);
+    void UpdateKey(KEYBOARD::KEY key, KEYBOARD::ACTION action, bool debugShow = false);
 
     void UpdateMods(int mods);
+
+    void Monkey(bool enable);
+
+    bool IsMonkey();
+
+    void SetMonkeyWait(int wait);
+
+    int GetMonkeyWait();
 
     //////////////////////////////////////////////////////////////////////////////
     //  Bindings
@@ -144,7 +157,24 @@ namespace SInput
     unsigned int currMods; // Stores the current Modifiers pressed
     unsigned int prevMods; // Stores the previous Modifiers pressed
 
+    DEVICETYPE device_type;
+    int device_id;
+
     Binding key_binding{ "Keyboard Bindings" };
+
+    bool monkey = false;
+    int monkey_wait = 0;
+  };
+
+  class VKeyboardDevice : public KeyboardDevice
+  {
+  public:
+    //////////////////////////////////////////////////////////////////////////////
+    //  Constructor/Destructor
+    //////////////////////////////////////////////////////////////////////////////
+
+    VKeyboardDevice();
+    ~VKeyboardDevice();
   };
 
   ////////////////////////////////////////////////////////////////////////////////

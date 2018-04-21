@@ -16,6 +16,8 @@ namespace SInput
 
     void SwapBuffers();
 
+    void RunMonkey();
+
     KeyboardDevice* GetKeyboard();
 
     KeyboardDevice* GetVKeyboard(unsigned num);
@@ -26,7 +28,7 @@ namespace SInput
   private:
 
     KeyboardDevice keyboard;
-    std::unordered_map<unsigned, KeyboardDevice> v_keyboards;
+    std::unordered_map<unsigned, VKeyboardDevice> v_keyboards;
   };
 
   extern KeyboardManager Key_Mgr;

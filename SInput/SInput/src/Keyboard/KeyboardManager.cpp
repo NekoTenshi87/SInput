@@ -1,5 +1,6 @@
 
 #include "KeyboardManager.hpp"
+#include <stdlib.h>
 
 namespace SInput
 {
@@ -44,6 +45,55 @@ namespace SInput
     for (auto& it : v_keyboards)
     {
       it.second.SwapBuffers();
+    }
+  }
+
+  void KeyboardManager::RunMonkey()
+  {
+    if (keyboard.IsMonkey())
+    {
+      int frame_wait = keyboard.GetMonkeyWait();
+
+      if (frame_wait < 0)
+      {
+        int random = std::rand() % KEYBOARD::KEY::NUMBEROFKEYS;
+
+        if (random == KEYBOARD::KEY::KEY_ESC)
+        {
+          ++random;
+        }
+
+        KEYBOARD::KEY key = (KEYBOARD::KEY)(random);
+
+        keyboard.UpdateKey(key, KEYBOARD::ACTION::PRESSED, true);
+
+        keyboard.SetMonkeyWait(std::rand() % 60);
+      }
+      else
+      {
+        keyboard.SetMonkeyWait(--frame_wait);
+      }
+    }
+
+    for (auto& it : v_keyboards)
+    {
+      if (it.second.IsMonkey())
+      {
+        int frame_wait = it.second.GetMonkeyWait();
+
+        if (frame_wait < 0)
+        {
+          KEYBOARD::KEY key = (KEYBOARD::KEY)(std::rand() % KEYBOARD::KEY::NUMBEROFKEYS);
+
+          it.second.UpdateKey(key, KEYBOARD::ACTION::PRESSED, true);
+
+          it.second.SetMonkeyWait(std::rand() % 60);
+        }
+        else
+        {
+          it.second.SetMonkeyWait(--frame_wait);
+        }
+      }
     }
   }
 

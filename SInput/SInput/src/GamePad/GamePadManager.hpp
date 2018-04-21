@@ -16,6 +16,8 @@ namespace SInput
 
     void SwapBuffers();
 
+    void RunMonkey();
+
     GamePadDevice* GetGamepad(unsigned num);
 
     GamePadDevice* GetVGamepad(unsigned num);

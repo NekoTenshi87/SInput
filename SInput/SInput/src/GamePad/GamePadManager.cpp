@@ -54,6 +54,51 @@ namespace SInput
     }
   }
 
+  void GamePadManager::RunMonkey()
+  {
+    for (size_t i = 0; i < GAMEPAD::NUMBEROFGAMEPADS; ++i)
+    {
+      if (gamepad[i].IsMonkey())
+      {
+        int frame_wait = gamepad[i].GetMonkeyWait();
+
+        if (frame_wait < 0)
+        {
+          GAMEPAD::BUTTON button = (GAMEPAD::BUTTON)(std::rand() % GAMEPAD::BUTTON::NUMBEROFGPBUTTONS);
+
+          gamepad[i].UpdateButton(i, button, GAMEPAD::ACTION::PRESSED, true);
+
+          gamepad[i].SetMonkeyWait(std::rand() % 60);
+        }
+        else
+        {
+          gamepad[i].SetMonkeyWait(--frame_wait);
+        }
+      }
+    }
+
+    for (auto& it : v_gamepads)
+    {
+      if (it.second.IsMonkey())
+      {
+        int frame_wait = it.second.GetMonkeyWait();
+
+        if (frame_wait < 0)
+        {
+          GAMEPAD::BUTTON button = (GAMEPAD::BUTTON)(std::rand() % GAMEPAD::BUTTON::NUMBEROFGPBUTTONS);
+
+          it.second.UpdateButton(2, button, GAMEPAD::ACTION::PRESSED, true);
+
+          it.second.SetMonkeyWait(std::rand() % 60);
+        }
+        else
+        {
+          it.second.SetMonkeyWait(--frame_wait);
+        }
+      }
+    }
+  }
+
   GamePadDevice* GamePadManager::GetGamepad(unsigned num)
   {
     if (num < GAMEPAD::NUMBEROFGAMEPADS)

@@ -27,13 +27,8 @@ void key_callback(SDL_Window* window, int key, int scancode, int action, int mod
     {
       SInput::KEYBOARD::KEY S_Key = SDL_KeyConverter(key);
 
-      SInput::Keyboard()->UpdateKey(S_Key, S_Action);
+      SInput::Keyboard()->UpdateKey(S_Key, S_Action, g_display.show_keys);
       SInput::Keyboard()->UpdateMods(SDL_ModConverter(mods));
-
-      if (g_display.show_keys)
-      {
-        SInput::Keyboard()->Print(S_Key);
-      }
     }
   }
   else
@@ -53,7 +48,7 @@ void key_callback(SDL_Window* window, int key, int scancode, int action, int mod
     }
   }
 
-  if (key == SDLK_i && mods == KMOD_CTRL && action == SDL_PRESSED)
+  if (key == SDLK_i && mods | KMOD_CTRL && action == SDL_PRESSED)
   {
     g_display.is_active ^= 1;
   }
@@ -69,13 +64,8 @@ void mouse_button_callback(SDL_Window* window, int button, int action, int mods)
     {
       SInput::MOUSE::BUTTON S_Button = SDL_MouseConverter(button);
 
-      SInput::Mouse()->UpdateButton(S_Button, S_Action);
+      SInput::Mouse()->UpdateButton(S_Button, S_Action, g_display.show_mouse_buttons);
       SInput::Keyboard()->UpdateMods(SDL_ModConverter(mods));
-
-      if (g_display.show_mouse_buttons)
-      {
-        SInput::Mouse()->Print(S_Button);
-      }
     }
   }
   else
@@ -104,11 +94,11 @@ void mouse_enter_callback(SDL_Window* window, int enter)
     switch (enter)
     {
       case SDL_FALSE:
-        SInput::Mouse()->UpdateMouseEnter(false);
+        SInput::Mouse()->UpdateMouseEnter(false, g_display.show_mouse_enter);
         break;
 
       case SDL_TRUE:
-        SInput::Mouse()->UpdateMouseEnter(true);
+        SInput::Mouse()->UpdateMouseEnter(true, g_display.show_mouse_enter);
         break;
 
       default:
@@ -123,12 +113,7 @@ void mouse_pos_callback(SDL_Window* window, int posX, int posY)
   {
     SInput::MousePos pos(posX, posY);
 
-    SInput::Mouse()->UpdateMousePos(pos);
-
-    if (g_display.show_mouse_pos)
-    {
-      SInput::Mouse()->PrintPos();
-    }
+    SInput::Mouse()->UpdateMousePos(pos, g_display.show_mouse_pos);
   }
 }
 
@@ -136,12 +121,7 @@ void mouse_scroll_callback(SDL_Window* window, double dX, double dY)
 {
   if (!g_display.is_active)
   {
-    SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)));
-
-    if (g_display.show_mouse_scroll)
-    {
-      SInput::Mouse()->PrintScoll();
-    }
+    SInput::Mouse()->UpdateMouseWheel(static_cast<int>(std::floor(-dX)), static_cast<int>(std::floor(dY)), g_display.show_mouse_scroll);
   }
   else
   {
@@ -170,20 +150,15 @@ void gamepad_connection_callback(SDL_Window* window, int gp_num, int connect)
   switch (connect)
   {
   case SDL_FALSE:
-    SInput::GamePad(gp_num)->UpdateConnection(SInput::GAMEPAD::DISCONNECTED);
+    SInput::GamePad(gp_num)->UpdateConnection(gp_num, SInput::GAMEPAD::DISCONNECTED, g_display.show_gamepad_connect);
     break;
 
   case SDL_TRUE:
-    SInput::GamePad(gp_num)->UpdateConnection(SInput::GAMEPAD::CONNECTED);
+    SInput::GamePad(gp_num)->UpdateConnection(gp_num, SInput::GAMEPAD::CONNECTED, g_display.show_gamepad_connect);
     break;
 
   default:
     break;
-  }
-
-  if (g_display.show_gamepad_connect)
-  {
-    SInput::GamePad(gp_num)->PrintConnection(gp_num +1);
   }
 }
 
@@ -198,12 +173,7 @@ void gamepad_button_callback(SDL_Window* window, int gp_num, int button, unsigne
     {
       SInput::GAMEPAD::BUTTON S_Button = SDL_GamePadButtonConverter(button);
 
-      SInput::GamePad(gp_num)->UpdateButton(S_Button, S_Action);
-
-      if (g_display.show_gamepad_buttons)
-      {
-        SInput::GamePad(gp_num)->PrintButton(gp_num + 1, S_Button);
-      }
+      SInput::GamePad(gp_num)->UpdateButton(gp_num, S_Button, S_Action, g_display.show_gamepad_buttons);
     }
   }
   else
@@ -227,11 +197,16 @@ void gamepad_axis_callback(SDL_Window* window, int gp_num, int axis, float delta
   {
     SInput::GAMEPAD::AXIS S_Axis = SDL_GamePadAxisConverter(axis);
 
-    SInput::GamePad(gp_num)->UpdateAxis(S_Axis, delta);
-
-    if (g_display.show_gamepad_axis)
+    SInput::GamePad(gp_num)->UpdateAxis(gp_num, S_Axis, delta, g_display.show_gamepad_axis);
+  }
+  else
+  {
+    if (SInput::GamePad(gp_num)->getNextAxis && SInput::GamePad(gp_num)->nextAxis == SInput::GAMEPAD::AXIS::UNKNOWN_AXIS)
     {
-      SInput::GamePad(gp_num)->PrintAxis(gp_num + 1, S_Axis);
+      if (std::abs(delta) > 0.5f)
+      {
+        SInput::GamePad(gp_num)->nextAxis = SDL_GamePadAxisConverter(axis);
+      }
     }
   }
 }
@@ -318,8 +293,8 @@ void PullEvents()
 
   while (SDL_PollEvent(&event))
   {
-    if (!g_display.is_active)
-    {
+    //if (!g_display.is_active)
+    //{
       switch (event.type)
       {
         case SDL_KEYDOWN:
@@ -383,11 +358,11 @@ void PullEvents()
           break;
         }
       }
-    }
-    else
-    {
-     SDL_ImGui_GL3_ProcessEvent(&event);
-    }
+    //}
+    //else
+    //{
+      //SDL_ImGui_GL3_ProcessEvent(&event);
+    //}
   }
 }
 
@@ -422,9 +397,44 @@ int main(int argc, char* args[])
 
   SInput::Init();
 
-  
+  // Testing Bindings
+  enum PLAYER_EVENTS
+  {
+    P_MOVE_UP,
+    P_MOVE_LEFT,
+    P_MOVE_DOWN,
+    P_MOVE_RIGHT,
+    P_JUMP,
+    P_RUN,
+    P_CROUCH,
+    P_SHOOT,
+    P_AIM,
+    P_MELEE
+  };
 
+  SInput::Keyboard()->BindKey(P_MOVE_UP, SInput::KEYBOARD::KEY::KEY_W);
+  SInput::Keyboard()->BindKey(P_MOVE_LEFT, SInput::KEYBOARD::KEY::KEY_A);
+  SInput::Keyboard()->BindKey(P_MOVE_DOWN, SInput::KEYBOARD::KEY::KEY_S);
+  SInput::Keyboard()->BindKey(P_MOVE_RIGHT, SInput::KEYBOARD::KEY::KEY_D);
+  SInput::Keyboard()->BindKey(P_JUMP, SInput::KEYBOARD::KEY::KEY_SPACE);
+  SInput::Keyboard()->BindKey(P_RUN, SInput::KEYBOARD::KEY::KEY_LEFT_SHIFT);
+  SInput::Keyboard()->BindKey(P_CROUCH, SInput::KEYBOARD::KEY::KEY_LEFT_CONTROL);
 
+  SInput::Mouse()->BindButton(P_SHOOT, SInput::MOUSE::BUTTON::BUTTON_LEFT);
+  SInput::Mouse()->BindButton(P_AIM, SInput::MOUSE::BUTTON::BUTTON_RIGHT);
+  SInput::Mouse()->BindButton(P_MELEE, SInput::MOUSE::BUTTON::BUTTON_4);
+
+  SInput::GamePad(0)->BindButton(P_MOVE_UP, SInput::GAMEPAD::BUTTON::BUTTON_11);
+  SInput::GamePad(0)->BindButton(P_MOVE_LEFT, SInput::GAMEPAD::BUTTON::BUTTON_14);
+  SInput::GamePad(0)->BindButton(P_MOVE_DOWN, SInput::GAMEPAD::BUTTON::BUTTON_13);
+  SInput::GamePad(0)->BindButton(P_MOVE_RIGHT, SInput::GAMEPAD::BUTTON::BUTTON_12);
+  SInput::GamePad(0)->BindButton(P_JUMP, SInput::GAMEPAD::BUTTON::BUTTON_1);
+  SInput::GamePad(0)->BindButton(P_RUN, SInput::GAMEPAD::BUTTON::BUTTON_5);
+  SInput::GamePad(0)->BindButton(P_CROUCH, SInput::GAMEPAD::BUTTON::BUTTON_2);
+  SInput::GamePad(0)->BindButton(P_MELEE, SInput::GAMEPAD::BUTTON::BUTTON_3);
+
+  SInput::GamePad(0)->BindAxis(P_SHOOT, SInput::GAMEPAD::AXIS::RIGHT_TRIGGER_AXIS);
+  SInput::GamePad(0)->BindAxis(P_AIM, SInput::GAMEPAD::AXIS::LEFT_TRIGGER_AXIS);
 
   ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -433,7 +443,13 @@ int main(int argc, char* args[])
   // run the program as long as the window is open
   while (!done)
   {
-    SInput::SwapBuffers();
+    if (!g_display.is_active)
+    {
+      SInput::SwapBuffers();
+      SInput::RunMonkey();
+    }
+
+    SInput::EnableNGram(g_display.is_active);
 
     PullEvents();
 
@@ -446,9 +462,7 @@ int main(int argc, char* args[])
     /* Render here */
     SDL_ImGui_GL3_NewFrame(sdl_window);
 
-    g_display.DisplaySInputWindow();
-
-    g_display.DisplayDebbugWindow();
+    g_display.DisplayAll();
 
     // Rendering
     glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);

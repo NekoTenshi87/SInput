@@ -13,6 +13,7 @@ namespace SInput
     virtual ~DevMgrPtr() {}
 
     virtual void SwapBuffers() {}
+    virtual void RunMonkey() {}
   };
 
   class DeviceManager
@@ -23,6 +24,8 @@ namespace SInput
     ~DeviceManager();
 
     void SwapBuffers();
+
+    void RunMonkey();
 
     Enum DeviceEnum{ "Device Enums" };
 

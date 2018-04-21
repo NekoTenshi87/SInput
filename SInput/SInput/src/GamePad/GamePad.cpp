@@ -1,15 +1,24 @@
 
 #include "GamePadManager.hpp"
+#include <SInput\SInput.hpp>
 #include <SInput\GamePad\GamePad.hpp>
+#include <SInput\Serialize.hpp>
+#include <SInput\Stats.hpp>
 #include <iostream>
 
 namespace SInput
 {
   GamePadDevice::GamePadDevice()
-  {}
+  {
+    device_type = DEVICETYPE::BUILT_IN_DEVICE;
+  }
 
-  GamePadDevice::~GamePadDevice()
-  {}
+  GamePadDevice::~GamePadDevice() {}
+
+  VGamePadDevice::VGamePadDevice() : GamePadDevice()
+  {
+    device_type = DEVICETYPE::VIRTUAL_DEVICE;
+  }
 
   void GamePadDevice::Print()
   {
@@ -133,26 +142,49 @@ namespace SInput
     return 0.0f;
   }
 
-  void GamePadDevice::UpdateButton(GAMEPAD::BUTTON button, GAMEPAD::ACTION action)
+  void GamePadDevice::UpdateButton(int num, GAMEPAD::BUTTON button, GAMEPAD::ACTION action, bool debugShow)
   {
     if (action > GAMEPAD::UNKNOWN_ACTION)
     {
       if (button > GAMEPAD::UNKNOWN_BUTTON && button < GAMEPAD::NUMBEROFGPBUTTONS)
       {
         currGP.Button[button].state = action;
+
+        DeviceData device;
+        device.device = DEVICE::GAMEPAD;
+        device.device_type = device_type;
+        device.device_id = num;
+
+        SerializeGamePad gp_data;
+        gp_data.action = action;
+        gp_data.button = button;
+        gp_data.time = currTime;
+
+        serialize.AddDeviceData(device, &gp_data);
+        stats.AddStatData(device, &gp_data);
+
+        if (debugShow)
+        {
+          PrintButton(num, button);
+        }
       }
     }
   }
 
-  void GamePadDevice::UpdateAxis(GAMEPAD::AXIS axis, float delta)
+  void GamePadDevice::UpdateAxis(int num, GAMEPAD::AXIS axis, float delta, bool debugShow)
   {
     if (axis > GAMEPAD::UNKNOWN_AXIS && axis < GAMEPAD::NUMBEROFGPAXIS)
     {
       currGP.Axis[axis].delta = delta;
+
+      if (debugShow)
+      {
+        PrintAxis(num, axis);
+      }
     }
   }
 
-  void GamePadDevice::UpdateConnection(GAMEPAD::STATUS status)
+  void GamePadDevice::UpdateConnection(int num, GAMEPAD::STATUS status, bool debugShow)
   {
     switch (status)
     {
@@ -170,8 +202,35 @@ namespace SInput
 
       default:
       break;
-
     }
+
+    if (debugShow)
+    {
+      PrintConnection(num);
+    }
+  }
+
+  void GamePadDevice::Monkey(bool enable)
+  {
+    if (monkey != enable)
+    {
+      monkey = enable;
+    }
+  }
+
+  bool GamePadDevice::IsMonkey()
+  {
+    return monkey;
+  }
+
+  void GamePadDevice::SetMonkeyWait(int wait)
+  {
+    monkey_wait = wait;
+  }
+
+  int GamePadDevice::GetMonkeyWait()
+  {
+    return monkey_wait;
   }
 
   void GamePadDevice::BindButton(int name_id, GAMEPAD::BUTTON button)

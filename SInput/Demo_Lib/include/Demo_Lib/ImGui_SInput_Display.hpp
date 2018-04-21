@@ -69,13 +69,25 @@ class ImGui_SInput_Display
     ImGui_SInput_Display() {}
     ~ImGui_SInput_Display() {}
 
+    void DisplayAll();
+
     void DisplaySInputWindow();
     void DisplayDebbugWindow();
 
+    void DisplayVirtualKeyboard();
+    void DisplayVirtualMouse();
+    void DisplayVirtualGamePad();
+
     bool is_active = false;
     bool show_log_window = true;
+    bool show_virt_keyboard = false;
+    bool show_virt_mouse = false;
+    bool show_virt_gamepad = false;
+
     bool show_keys = true;
+    bool show_mods = true;
     bool show_mouse_buttons = true;
+    bool show_mouse_enter = true;
     bool show_mouse_scroll = true;
     bool show_mouse_pos = true;
     bool show_gamepad_buttons = true;
@@ -89,6 +101,13 @@ class ImGui_SInput_Display
     bool show_most_common_next = true;
     int num_most_common_next = 5;
 
+    bool run_monkey_keyboard = false;
+    bool run_monkey_mouse = false;
+    bool run_monkey_gamepad = false;
+    bool run_monkey_vkeyboard = false;
+    bool run_monkey_vmouse = false;
+    bool run_monkey_vgamepad = false;
+
     bool use_single_bind = true;
 
     bool selected_key[16] = { false };
@@ -100,6 +119,23 @@ class ImGui_SInput_Display
     int gamepad_id = 0;
     int gamepad_id_prev = 0;
 
+    bool stats_selected_key = false;
+    bool stats_selected_mouse = false;
+    bool stats_selected_gamepad = false;
+    std::string stats_key_name;
+    std::string stats_mouse_name;
+    std::string stats_gamepad_name;
+    SInput::KEYBOARD::KEY stats_key = SInput::KEYBOARD::KEY::UNKNOWN_KEY;
+    SInput::MOUSE::BUTTON stats_mouse = SInput::MOUSE::BUTTON::UNKNOWN_BUTTON;
+    SInput::GAMEPAD::BUTTON stats_gamepad = SInput::GAMEPAD::BUTTON::UNKNOWN_BUTTON;
+
     ImVec4 color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+  private:
+    void DisplayVKey(SInput::KEYBOARD::KEY key, std::string name, ImVec2 size = ImVec2(0.0f,0.0f));
+    void DisplayVMod(SInput::KEYBOARD::KEY key, std::string name, ImVec2 size = ImVec2(0.0f,0.0f));
+    void DisplayVMButton(SInput::MOUSE::BUTTON button, std::string name, ImVec2 size = ImVec2(0.0f,0.0f));
+    void DisplayVMWheel(int dx, int dy, std::string name, ImVec2 size = ImVec2(0.0f,0.0f));
+    void DisplayVGPButton(SInput::GAMEPAD::BUTTON button, std::string name, ImVec2 size = ImVec2(0.0f, 0.0f));
 };
 

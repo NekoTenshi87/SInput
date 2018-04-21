@@ -9,4 +9,10 @@ namespace SInput
   void Shutdown();
 
   void SwapBuffers();
+
+  void RunMonkey();
+
+  void EnableNGram(bool enable);
+
+  extern float currTime;
 }

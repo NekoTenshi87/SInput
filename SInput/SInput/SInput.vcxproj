@@ -135,7 +135,10 @@
     <ClCompile Include="src\Mouse\Mouse.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Mouse\MouseManager.cpp" />
+    <ClCompile Include="src\NGram.cpp" />
+    <ClCompile Include="src\Serialize.cpp" />
     <ClCompile Include="src\SInput.cpp" />
+    <ClCompile Include="src\Stats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\SInput\Binding.hpp" />
@@ -147,7 +150,10 @@
     <ClInclude Include="include\SInput\Keyboard\Keyboard.hpp" />
     <ClInclude Include="include\SInput\Mouse\Mouse.hpp" />
     <ClInclude Include="include\SInput\Input.hpp" />
+    <ClInclude Include="include\SInput\NGram.hpp" />
+    <ClInclude Include="include\SInput\Serialize.hpp" />
     <ClInclude Include="include\SInput\SInput.hpp" />
+    <ClInclude Include="include\SInput\Stats.hpp" />
     <ClInclude Include="src\DeviceManager.hpp" />
     <ClInclude Include="src\GamePad\GamePadManager.hpp" />
     <ClInclude Include="src\Internal.hpp" />

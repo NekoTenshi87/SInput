@@ -48,7 +48,9 @@ namespace SInput
     {
       UNKNOWN_ACTION = -1,
       RELEASED,
-      PRESSED
+      PRESSED,
+      MOVED_AXIS,
+      CONNECTION_UPDATE
     };
 
     enum BUTTON
@@ -130,11 +132,19 @@ namespace SInput
 
     float GetAxis(GAMEPAD::AXIS axis);
 
-    void UpdateButton(GAMEPAD::BUTTON button, GAMEPAD::ACTION action);
+    void UpdateButton(int num, GAMEPAD::BUTTON button, GAMEPAD::ACTION action, bool debugShow = false);
 
-    void UpdateAxis(GAMEPAD::AXIS axis, float delta);
+    void UpdateAxis(int num, GAMEPAD::AXIS axis, float delta, bool debugShow = false);
 
-    void UpdateConnection(GAMEPAD::STATUS status);
+    void UpdateConnection(int num, GAMEPAD::STATUS status, bool debugShow = false);
+
+    void Monkey(bool enable);
+
+    bool IsMonkey();
+
+    void SetMonkeyWait(int wait);
+
+    int GetMonkeyWait();
 
     //////////////////////////////////////////////////////////////////////////////
     //  Bindings
@@ -209,8 +219,20 @@ namespace SInput
     GP_DATA currGP;  // Stores the current GamePad Buttons pressed
     GP_DATA prevGP;  // Stores the previous GamePad Buttons pressed
 
+    DEVICETYPE device_type;
+    int device_id;
+
     Binding button_binding{ "GamePad Button Bindings" };
     Binding axis_binding{ "GamePad Axis Bindings" };
+
+    bool monkey = false;
+    int monkey_wait = 0;
+  };
+
+  class VGamePadDevice : public GamePadDevice
+  {
+    VGamePadDevice();
+    ~VGamePadDevice();
   };
 
   ////////////////////////////////////////////////////////////////////////////////
